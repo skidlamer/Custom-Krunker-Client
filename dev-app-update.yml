@@ -1,0 +1,3 @@
+provider: generic
+url: 'http://client2.krunker.io'
+updaterCacheDirName: io.krunker.desktop-updater
