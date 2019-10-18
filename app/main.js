@@ -363,7 +363,7 @@ const initSplashWindow = () => {
 		height: 370,
 		transparent: true,
 		frame: false,
-		skipTaskbar: true,
+		// skipTaskbar: true, // Enabled by default
 		center: true,
 		webPreferences: {
 			nodeIntegration: true
@@ -378,7 +378,7 @@ const initSplashWindow = () => {
 		slashes: true
 	}));
 	splashWindow.webContents.once('did-finish-load', () => initUpdater());
-	if (consts.DEBUG) splashWindow.webContents.openDevTools({ mode: 'undocked' }); //Disabled by default
+	if (consts.DEBUG) splashWindow.webContents.openDevTools({ mode: 'undocked' }); // Disabled by default
 };
 
 const initPromptWindow = () => {
@@ -428,7 +428,7 @@ const initPromptWindow = () => {
 initPromptWindow();
 
 const initUpdater = () => {
-	if (consts.DEBUG || process.platform == 'darwin') return initGameWindow();
+	if (consts.DEBUG || process.platform == 'darwin' || config.get("utilities_skipUpdates")) return initGameWindow();
 	autoUpdater.on('checking-for-update', (info) => splashWindow.webContents.send('checking-for-update'));
 
 	autoUpdater.on('error', (err) => {

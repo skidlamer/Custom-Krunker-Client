@@ -47,14 +47,23 @@ class Utilities {
 					}
 				}
 			},
-			customSplash: {
-				name: "Custom Splash",
+			customSplashBackground: {
+				name: "Custom Splash Background",
 				pre: "<div class='setHed'>Even More Customization</div>",
-				val: "imgs/splash.png",
-				html: _ => {
-					return `<input type="url" name="url" class="inputGrey2" placeholder="Splash Screen Image URL" value="${this.settings.customSplash.val}" oninput="window.utilities.setSetting('customSplash', this.value);">`;
-				}
+				val: "",
+				html: () => `<input type="url" name="url" class="inputGrey2" placeholder="Splash Screen Background Image Path/URL" value="${this.settings.customSplashBackground.val}" oninput="window.utilities.setSetting('customSplashBackground', this.value);">`
+			},
+			customSplashFont: {
+				name: "Custom Splash Font",
+				val: "",
+				html: () => `<input type="url" name="url" class="inputGrey2" placeholder="Splash Screen Font Path/URL" value="${this.settings.customSplashFont.val}" oninput="window.utilities.setSetting('customSplashFont', this.value);">`
+			},
+			skipUpdates: {
+				name: "Skip Updates",
+				val: false,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("skipUpdates", this.checked)' ${this.settings.skipUpdates.val ? "checked" : ""}><span class='slider'></span></label>`
 			}
+
 		};
 		const inject = _ => {
 			var old = window.windows[0].gen;
