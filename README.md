@@ -4,7 +4,8 @@ Customized Krunker Desktop Client.
 ## Current Features
 - Ad Hider ( not actually blocking ads for Free KR compatibility )
 - Add compatibility with custom fonts for few social and market pages
-- Customizable splash screen background
+- An option for skip updates
+- Customizable splash screen background and font
 - Splash screen font size fix
 - Few minor tweaks for debugging
 
