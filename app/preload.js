@@ -140,10 +140,19 @@ const RichPresence = window.rp = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-	//Create CSS that forces ads to be hidden
-	let noAdCSS = document.createElement("style")
-	noAdCSS.innerText = "#aHolder, #pre-content-container { display: none !important}"
-	document.head.appendChild(noAdCSS)
+	// Create a CSS that forces ads to be hidden, patches custom font issues
+	let patchCSS = document.createElement("style")
+	patchCSS.innerText = `#aHolder, #pre-content-container {
+		display: none !important
+	}
+	.purchBtn {
+		position: absolute;
+		bottom: 10px;
+	}
+	.scrollItem > div {
+		overflow: auto;
+	}`
+	document.head.appendChild(patchCSS)
 	
 	RichPresence.init();
 
