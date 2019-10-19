@@ -428,7 +428,7 @@ const initPromptWindow = () => {
 initPromptWindow();
 
 const initUpdater = () => {
-	if (consts.DEBUG || process.platform == 'darwin' || config.get("utilities_skipUpdates")) return initGameWindow();
+	if (consts.DEBUG || process.platform == 'darwin' || process.argv.includes("--skip-update") || config.get("utilities_skipUpdates")) return initGameWindow();
 	autoUpdater.on('checking-for-update', (info) => splashWindow.webContents.send('checking-for-update'));
 
 	autoUpdater.on('error', (err) => {
@@ -487,6 +487,10 @@ const initShortcuts = () => {
 		openConfig: {
 			key: 'Shift+F1',
 			press: _ => config.openInEditor(),
+		},
+		toggleDevTools: {
+			key: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+			press: () => gameWindow.toggleDevTools()
 		}
 	}
 	Object.keys(KEY_BINDS).forEach(k => {
