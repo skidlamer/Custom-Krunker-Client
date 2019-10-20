@@ -67,6 +67,11 @@ class Utilities {
 				name: "Disable Resource Swapper",
 				val: false,
 				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("disableResourceSwapper", this.checked)' ${this.settings.disableResourceSwapper.val ? "checked" : ""}><span class='slider'></span></label>`
+			},
+			disableDiscordRPC: {
+				name: "Disable Discord RPC",
+				val: false,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("disableDiscordRPC", this.checked)' ${this.settings.disableDiscordRPC.val ? "checked" : ""}><span class='slider'></span></label>`
 			}
 		};
 		const inject = _ => {

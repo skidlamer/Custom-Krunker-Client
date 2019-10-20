@@ -90,35 +90,37 @@ const initDiscordRPC = () => {
 
 	rpc.on('error', console.error);
 
-	rpc.login({ 'clientId': consts.DISCORD_ID })
-		.then(() => {
-			rpc.isConnected = true;
-			rpc.setActivity2 = function(win, obj) {
-				if (current == win) rpc.setActivity(obj);
-			};
-			rpc.on('RPC_MESSAGE_RECEIVED', (event) => {
-				console.log('RPC_MESSAGE_RECEIVED', event); //Disabled by default
-				if (!gameWindow) return;
-				gameWindow.webContents.send('log', ['RPC_MESSAGE_RECEIVED', event]);
-			});
-			rpc.subscribe('ACTIVITY_JOIN', ({ secret }) => {
-				if (!gameWindow) return;
-				let parse = secret.split('|');
-				if (parse[2].isCode()) {
-					gameWindow.loadURL('https://' + parse[0] + '/?game=' + parse[2], consts.NO_CACHE);
-				}
-			});
-			rpc.subscribe('ACTIVITY_INVITE', (event) => {
-				if (!gameWindow) return;
-				gameWindow.webContents.send('ACTIVITY_INVITE', event);
-			});
+	if (!config.get("utilities_disableDiscordRPC")) {
+		rpc.login({ 'clientId': consts.DISCORD_ID })
+			.then(() => {
+				rpc.isConnected = true;
+				rpc.setActivity2 = function(win, obj) {
+					if (current == win) rpc.setActivity(obj);
+				};
+				rpc.on('RPC_MESSAGE_RECEIVED', (event) => {
+					console.log('RPC_MESSAGE_RECEIVED', event); //Disabled by default
+					if (!gameWindow) return;
+					gameWindow.webContents.send('log', ['RPC_MESSAGE_RECEIVED', event]);
+				});
+				rpc.subscribe('ACTIVITY_JOIN', ({ secret }) => {
+					if (!gameWindow) return;
+					let parse = secret.split('|');
+					if (parse[2].isCode()) {
+						gameWindow.loadURL('https://' + parse[0] + '/?game=' + parse[2], consts.NO_CACHE);
+					}
+				});
+				rpc.subscribe('ACTIVITY_INVITE', (event) => {
+					if (!gameWindow) return;
+					gameWindow.webContents.send('ACTIVITY_INVITE', event);
+				});
 
-			rpc.subscribe('ACTIVITY_JOIN_REQUEST', (user) => {
-				if (!gameWindow) return;
-				gameWindow.webContents.send('ACTIVITY_JOIN_REQUEST', user);
-			});
-		})
-		.catch(console.error);
+				rpc.subscribe('ACTIVITY_JOIN_REQUEST', (user) => {
+					if (!gameWindow) return;
+					gameWindow.webContents.send('ACTIVITY_JOIN_REQUEST', user);
+				});
+			})
+			.catch(console.error);
+	}
 };
 initDiscordRPC();
 
