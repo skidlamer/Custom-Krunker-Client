@@ -1,0 +1,4 @@
+provider: github
+owner: Mixaz017
+repo: Custom-Krunker-Client
+updaterCacheDirName: io.krunker.desktop-updater
