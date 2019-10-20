@@ -2,10 +2,11 @@
 Customized Krunker Desktop Client.
 
 ## Current Features
-- Add an option for skip updates
+- Add ability to change auto updater behavior
 - Skip updates by giving --skip-update argument
 - Add compatibility with custom fonts for few social and market pages
 - Add keyboard shortcut for toggle DevTools
+- Add an button that opens appData directory
 - Fix splash screen font size
 - Hide ads ( not actually blocking ads for Free KR compatibility )
 - Make splash screen background and font customizable
