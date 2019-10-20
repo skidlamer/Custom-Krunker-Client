@@ -58,12 +58,11 @@ class Utilities {
 				val: "",
 				html: () => `<input type="url" name="url" class="inputGrey2" placeholder="Splash Screen Font Path/URL" value="${this.settings.customSplashFont.val}" oninput="window.utilities.setSetting('customSplashFont', this.value);">`
 			},
-			skipUpdates: {
-				name: "Skip Updates",
-				val: false,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("skipUpdates", this.checked)' ${this.settings.skipUpdates.val ? "checked" : ""}><span class='slider'></span></label>`
+			autoUpdateType: {
+				name: "Auto Update Type",
+				val: "download",
+				html: () => `<select onchange="window.utilities.setSetting('autoUpdateType', this.value);" class="inputGrey2"><option value="download" ${this.settings.autoUpdateType.val == "download" ? "selected" : ""}>Download</option><option value="check" ${this.settings.autoUpdateType.val == "check" ? "selected" : ""}>Check</option><option value="skip" ${this.settings.autoUpdateType.val == "skip" ? "selected" : ""}>Skip</option></select>`
 			}
-
 		};
 		const inject = _ => {
 			var old = window.windows[0].gen;
@@ -79,7 +78,9 @@ class Utilities {
 	              <br>
 	              <a onclick='window.utilities.clearCache()' class='menuLink'>Clear Cache</a>
 	              |
-	              <a onclick='window.utilities.resetSettings()' class='menuLink'>Reset Addons</a>
+				  <a onclick='window.utilities.resetSettings()' class='menuLink'>Reset Addons</a>
+				  |
+				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.getName()))'>Open appData</a>
 	           `;
 				return old() + tmpHTML;
 			}

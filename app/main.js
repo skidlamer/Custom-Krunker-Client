@@ -428,7 +428,7 @@ const initPromptWindow = () => {
 initPromptWindow();
 
 const initUpdater = () => {
-	if (consts.DEBUG || process.platform == 'darwin' || process.argv.includes("--skip-update") || config.get("utilities_skipUpdates")) return initGameWindow();
+	if (consts.DEBUG || process.platform == 'darwin' || process.argv.includes("--skip-update") || config.get("utilities_autoUpdateType") == "skip") return initGameWindow();
 	autoUpdater.on('checking-for-update', (info) => splashWindow.webContents.send('checking-for-update'));
 
 	autoUpdater.on('error', (err) => {
@@ -439,7 +439,10 @@ const initUpdater = () => {
 
 	autoUpdater.on('download-progress', (info) => splashWindow.webContents.send('download-progress', info));
 
-	autoUpdater.on('update-available', (info) => splashWindow.webContents.send('update-available', info));
+	autoUpdater.on('update-available', (info) => {
+		splashWindow.webContents.send('update-available', info);
+		setTimeout(() => initGameWindow(), 1000);
+	})
 
 	autoUpdater.on('update-not-available', (info) => {
 		splashWindow.webContents.send('update-not-available', info);
@@ -451,6 +454,7 @@ const initUpdater = () => {
 		setTimeout(() => autoUpdater.quitAndInstall(), 2500);
 	});
 	autoUpdater.channel = "latest";
+	autoUpdater.autoDownload = config.get("utilities_autoUpdateType") == "download"
 	autoUpdater.checkForUpdates();
 }
 

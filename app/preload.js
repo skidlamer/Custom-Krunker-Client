@@ -140,6 +140,8 @@ const RichPresence = window.rp = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+	window.remote = remote
+	window.path = remote.require("path")
 	// Create a CSS that forces ads to be hidden, patches custom font issues
 	let patchCSS = document.createElement("style")
 	patchCSS.innerText = `#aHolder, #pre-content-container {
