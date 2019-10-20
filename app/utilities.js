@@ -62,6 +62,11 @@ class Utilities {
 				name: "Auto Update Type",
 				val: "download",
 				html: () => `<select onchange="window.utilities.setSetting('autoUpdateType', this.value);" class="inputGrey2"><option value="download" ${this.settings.autoUpdateType.val == "download" ? "selected" : ""}>Download</option><option value="check" ${this.settings.autoUpdateType.val == "check" ? "selected" : ""}>Check</option><option value="skip" ${this.settings.autoUpdateType.val == "skip" ? "selected" : ""}>Skip</option></select>`
+			},
+			disableResourceSwapper: {
+				name: "Disable Resource Swapper",
+				val: false,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("disableResourceSwapper", this.checked)' ${this.settings.disableResourceSwapper.val ? "checked" : ""}><span class='slider'></span></label>`
 			}
 		};
 		const inject = _ => {

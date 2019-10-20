@@ -160,7 +160,7 @@ const initGameWindow = () => {
 			}
 		});
 	};
-	allFilesSync(swapFolder);
+	if (!config.get("utilities_disableResourceSwapper")) allFilesSync(swapFolder);
 	if (swap.filter.urls.length) {
 		gameWindow.webContents.session.webRequest.onBeforeRequest(swap.filter, (details, callback) => {
 			callback({ cancel: false, redirectURL: swap.files[details.url.replace(/https|http|(\?.*)|(#.*)/gi, '')] || details.url });
