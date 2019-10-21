@@ -147,9 +147,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	patchCSS.innerText = `#aHolder, #pre-content-container {
 		display: none !important
 	}
-	.purchBtn {
+	.purchBtn, .purchInfoBtn {
 		position: absolute;
-		bottom: 10px;
+		bottom: 11px;
 	}
 	.scrollItem > div {
 		overflow: auto;
