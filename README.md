@@ -2,8 +2,7 @@
 Customized Krunker Desktop Client.
 
 ## Current Features
-- Add ability to change auto updater behavior
-- Skip updates by giving `--skip-update` argument
+- Add ability to change auto updater behavior from configs or `--update=<download|check|skip>` argument ( argument method overrides config )
 - Add compatibility with custom fonts to few social and market pages
 - Add keyboard shortcut for toggle DevTools
 - Add an button that opens `appData` directory
