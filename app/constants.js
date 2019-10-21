@@ -2,8 +2,11 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+const yargs = require("yargs")
 
 module.exports.DEBUG = process.argv.includes('--dev') || false;
+module.exports.AUTO_UPDATE_TYPE = yargs.argv.update || null
+
 
 module.exports.isAMDCPU = Boolean(os.cpus().filter(x => /amd/i.test(x.model)).length);
 
