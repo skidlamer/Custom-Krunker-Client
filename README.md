@@ -15,3 +15,7 @@ Customized Krunker Desktop Client.
 ### How?
 If you're Windows user, download a installer from [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest). You don't have to download `.blockmap` or `latest.yml`, those files are released for auto update purpose.  
 If you're Mac or Linux user, get [electron-builder](https://www.electron.build/) (or other builder/packager), clone or ZIP download this repository, and build/package it for yourself. I can't build Mac and Linux versions from a Windows PC.
+
+#### Tips
+- Options that added by the custom client is highlighted in yellow
+- Some of options requires restart the client or reload the page to apply
