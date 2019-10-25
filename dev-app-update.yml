@@ -1,3 +1,4 @@
-provider: generic
-url: 'http://client2.krunker.io'
+provider: github
+owner: Mixaz017
+repo: Custom-Krunker-Client
 updaterCacheDirName: io.krunker.desktop-updater
