@@ -1,6 +1,8 @@
 const { remote, ipcRenderer } = require('electron');
 const gameWindow = remote.getCurrentWindow();
 const consts = require('./constants.js');
+const Store = require('electron-store');
+const config = new Store();
 const log = require('electron-log');
 const Utilities = require('./utilities.js');
 
@@ -142,19 +144,6 @@ const RichPresence = window.rp = {
 document.addEventListener("DOMContentLoaded", () => {
 	window.remote = remote
 	window.path = remote.require("path")
-	// Create a CSS that forces ads to be hidden, patches custom font issues
-	let patchCSS = document.createElement("style")
-	patchCSS.innerText = `#aHolder, #pre-content-container {
-		display: none !important
-	}
-	.purchBtn, .purchInfoBtn {
-		position: absolute;
-		bottom: 11px;
-	}
-	.scrollItem > div {
-		overflow: auto;
-	}`
-	document.head.appendChild(patchCSS)
 	
 	RichPresence.init();
 
@@ -163,4 +152,23 @@ document.addEventListener("DOMContentLoaded", () => {
 	} else if (location.href.isEditor()) {
 		window.onbeforeunload = null;
 	}
+
+	// Create a CSS that forces ads to be hidden and patches custom font issues if enabled in config
+	let patchCSS = document.createElement("style")
+	patchCSS.innerText = `.customUtility {
+		color: #FFCC4D
+	}
+	${config.get("utilities_hideAds", true) ? `#aHolder, #pre-content-container {
+		display: none !important
+	}` : ""}
+	${config.get("utilities_customFontsCSSFix", true) ? `purchBtn, .purchInfoBtn {
+		position: absolute;
+		bottom: 11px;
+	}
+	.scrollItem > div {
+		overflow: auto;
+	}` : ""}`
+	document.head.appendChild(patchCSS)
+
+	if (config.get("utilities_preloadAudio", true)) consts.audioFileNames.forEach(fileName => fetch(`${location.origin}/sound/${fileName}`))
 }, false);

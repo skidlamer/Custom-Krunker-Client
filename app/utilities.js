@@ -47,9 +47,25 @@ class Utilities {
 					}
 				}
 			},
+			customFontsCSSFix: {
+				name: "Custom Fonts CSS Fix",
+				pre: "<div class='setHed customUtility'>Patches</div>",	
+				val: true,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("customFontsCSSFix", this.checked)' ${this.settings.customFontsCSSFix.val ? "checked" : ""}><span class='slider'></span></label>`
+			},
+			hideAds: {
+				name: "Hide Ads",
+				val: true,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("hideAds", this.checked)' ${this.settings.hideAds.val ? "checked" : ""}><span class='slider'></span></label>`
+			},
+			preloadAudio: {
+				name: "Preload Audio Files",
+				val: true,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("preloadAudio", this.checked)' ${this.settings.preloadAudio.val ? "checked" : ""}><span class='slider'></span></label>`
+			},
 			customSplashBackground: {
 				name: "Custom Splash Background",
-				pre: "<div class='setHed'>Even More Customization</div>",
+				pre: "<div class='setHed customUtility'>Even More Customization</div>",
 				val: "",
 				html: () => `<input type="url" name="url" class="inputGrey2" placeholder="Splash Screen Background Image Path/URL" value="${this.settings.customSplashBackground.val}" oninput="window.utilities.setSetting('customSplashBackground', this.value);">`
 			},
@@ -61,7 +77,7 @@ class Utilities {
 			autoUpdateType: {
 				name: "Auto Update Type",
 				val: "download",
-				html: () => `<select onchange="window.utilities.setSetting('autoUpdateType', this.value);" class="inputGrey2"><option value="download" ${this.settings.autoUpdateType.val == "download" ? "selected" : ""}>Download</option><option value="check" ${this.settings.autoUpdateType.val == "check" ? "selected" : ""}>Check</option><option value="skip" ${this.settings.autoUpdateType.val == "skip" ? "selected" : ""}>Skip</option></select>`
+				html: () => generateSelectHTML("autoUpdateType", consts.autoUpdateTypes)
 			},
 			disableResourceSwapper: {
 				name: "Disable Resource Swapper",
@@ -72,6 +88,12 @@ class Utilities {
 				name: "Disable Discord RPC",
 				val: false,
 				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("disableDiscordRPC", this.checked)' ${this.settings.disableDiscordRPC.val ? "checked" : ""}><span class='slider'></span></label>`
+			},
+			debugMode: {
+				name: "Debug Mode",
+				pre: "<div class='setHed customUtility'>Debugging</div>",
+				val: false,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("debugMode", this.checked)' ${this.settings.debugMode.val ? "checked" : ""}><span class='slider'></span></label>`
 			}
 		};
 		const inject = _ => {
@@ -94,6 +116,12 @@ class Utilities {
 	           `;
 				return old() + tmpHTML;
 			}
+		}
+		let generateSelectHTML = (key, options) => {
+			var selectHTML = '<select\x20onchange=\x27window.utilities.setSetting(\x22' + key + '\x22,\x20this.value)\x27\x20class=\x27inputGrey2\x27>';
+                for (let option in options)
+                    selectHTML += '<option\x20value=\x27' + option + '\x27\x20' + (option == this.settings[key]['val'] ? 'selected' : '') + '>' + options[option] + '</option>';
+                return selectHTML += '</select>';
 		}
 		let waitForWindows = setInterval(_ => {
 			if (window.windows) {
