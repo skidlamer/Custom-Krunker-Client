@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	${config.get("utilities_hideAds", true) ? `#aHolder, #pre-content-container {
 		display: none !important
 	}` : ""}
-	${config.get("utilities_customFontsCSSFix", true) ? `purchBtn, .purchInfoBtn {
+	${config.get("utilities_customFontsCSSFix", true) ? `.purchBtn, .purchInfoBtn {
 		position: absolute;
 		bottom: 11px;
 	}
