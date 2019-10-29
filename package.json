@@ -1,6 +1,6 @@
 {
   "name": "io.krunker.desktop",
-  "version": "1.7.3-custom.6",
+  "version": "1.7.3-custom.8",
   "description": "Desktop Client For Krunker",
   "author": "Yendis Entertainment Pty Ltd",
   "main": "app/main.js",
