@@ -19,6 +19,7 @@ let gameWindow = null,
 	promptWindow = null,
 	current = 0;
 const autoUpdateType = (/^(download|check|skip)$/.exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
+consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode")
 
 const initLogging = () => {
 	log.debug("-------------------- Client Start --------------------");

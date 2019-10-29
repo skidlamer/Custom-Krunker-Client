@@ -112,7 +112,9 @@ class Utilities {
 	              |
 				  <a onclick='window.utilities.resetSettings()' class='menuLink'>Reset Addons</a>
 				  |
-				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.getName()))'>Open appData</a>
+				  <a onclick='window.utilities.relaunchClient()' class='menuLink'>Relaunch Client</a>
+				  |
+				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.getName()))' class='menuLink'>Open appData</a>
 	           `;
 				return old() + tmpHTML;
 			}
@@ -157,7 +159,7 @@ class Utilities {
 
 	resetSettings() {
 		if (confirm("Are you sure you want to reset all your client addons? This will also refresh the page")) {
-			Object.keys(config.store).filter(x => x.includes("utilities_")).forEach(x => config.remove(x));
+			Object.keys(config.store).filter(x => x.includes("utilities_")).forEach(x => config.delete(x));
 			location.reload();
 		}
 	}
@@ -193,6 +195,11 @@ class Utilities {
 
 	fixMenuSettings() {
 		[...document.querySelectorAll(".menuItemIcon")].forEach(el => el.style.height = "60px");
+	}
+
+	relaunchClient(options = {}) {
+		remote.app.relaunch(options)
+		remote.app.exit(0)
 	}
 
 	onLoad() {
