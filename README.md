@@ -3,6 +3,7 @@ Customized Krunker Desktop Client.
 
 ## Current Features
 - Add ability to change auto updater behavior from configs or `--update=<download|check|skip>` argument ( argument method overrides config )
+- Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
 - Add compatibility with custom fonts to few social and market pages ( optional )
 - Add keyboard shortcut for toggle DevTools
 - Add an button that opens `appData` directory
