@@ -6,6 +6,9 @@ Customized Krunker Desktop Client.
 - Add compatibility with custom fonts to few social and market pages ( optional )
 - Add keyboard shortcut for toggle DevTools
 - Add an button that opens `appData` directory
+- Add an button that relaunch the client
+- Add an option that always enables debug mode
+- Fix "Reset Addons" button behavior
 - Fix splash screen font size
 - Hide ads ( not actually blocking traffic for Free KR compatibility / optional )
 - Make splash screen background and font customizable
