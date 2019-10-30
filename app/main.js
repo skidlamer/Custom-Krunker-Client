@@ -37,21 +37,18 @@ const initLogging = () => {
 initLogging();
 
 const initSwitches = () => {
+	// Usefull info
+	// https://forum.manjaro.org/t/howto-google-chrome-tweaks-for-76-0-3809-100-or-newer-20190817/39946
 	if (config.get('utilities_unlimitedFrames', true)) {
-		if (consts.isAMDCPU) {
-			app.commandLine.appendSwitch('disable-zero-copy');
-			app.commandLine.appendSwitch('ui-disable-partial-swap');
-		}
+		if (consts.isAMDCPU) app.commandLine.appendSwitch('enable-zero-copy');
 		app.commandLine.appendSwitch('disable-frame-rate-limit');
 	}
-	app.commandLine.appendSwitch('disk-cache-size',1);
-	app.commandLine.appendSwitch('media-cache-size',1);
-	app.commandLine.appendSwitch("disable-http-cache");
-	app.commandLine.appendSwitch('ignore-gpu-blacklist', true);
+	app.commandLine.appendSwitch('enable-quic');
+	app.commandLine.appendSwitch('high-dpi-support',1);
+	app.commandLine.appendSwitch('ignore-gpu-blacklist');
 	if (config.get('utilities_d3d9Mode', false)) {
 		app.commandLine.appendSwitch('use-angle', 'd3d9');
 		app.commandLine.appendSwitch('enable-webgl2-compute-context');
-		// app.commandLine.appendSwitch('use-cmd-decoder=passthrough');
 		app.commandLine.appendSwitch('renderer-process-limit', 100);
 		app.commandLine.appendSwitch('max-active-webgl-contexts', 100);
 	}
@@ -100,7 +97,7 @@ const initDiscordRPC = () => {
 					if (current == win) rpc.setActivity(obj);
 				};
 				rpc.on('RPC_MESSAGE_RECEIVED', (event) => {
-					console.log('RPC_MESSAGE_RECEIVED', event); //Disabled by default
+					//console.log('RPC_MESSAGE_RECEIVED', event);
 					if (!gameWindow) return;
 					gameWindow.webContents.send('log', ['RPC_MESSAGE_RECEIVED', event]);
 				});
@@ -108,7 +105,7 @@ const initDiscordRPC = () => {
 					if (!gameWindow) return;
 					let parse = secret.split('|');
 					if (parse[2].isCode()) {
-						gameWindow.loadURL('https://' + parse[0] + '/?game=' + parse[2], consts.NO_CACHE);
+						gameWindow.loadURL('https://' + parse[0] + '/?game=' + parse[2]);
 					}
 				});
 				rpc.subscribe('ACTIVITY_INVITE', (event) => {
@@ -120,8 +117,8 @@ const initDiscordRPC = () => {
 					if (!gameWindow) return;
 					gameWindow.webContents.send('ACTIVITY_JOIN_REQUEST', user);
 				});
-			})
-			.catch(console.error);
+		})
+		.catch(console.error);
 	}
 };
 initDiscordRPC();
@@ -171,21 +168,21 @@ const initGameWindow = () => {
 		});
 	}
 
-	gameWindow.loadURL('https://krunker.io', consts.NO_CACHE);
+	gameWindow.loadURL('https://krunker.io');
 
 	let nav = (e, url) => {
 		e.preventDefault();
 		if (url.isKrunker()) {
 			if (url.isEditor()) {
 				if (!editorWindow) initEditorWindow();
-				else editorWindow.loadURL(url, consts.NO_CACHE);
+				else editorWindow.loadURL(url);
 			} else if (url.isSocial()) {
 				if (!socialWindow) initSocialWindow(url);
-				else socialWindow.loadURL(url, consts.NO_CACHE);
+				else socialWindow.loadURL(url);
 			} else if (url.isViewer()) {
 				if (!viewerWindow) initViewerWindow(url);
-				else viewerWindow.loadURL(url, consts.NO_CACHE);
-			} else gameWindow.loadURL(url, consts.NO_CACHE);
+				else viewerWindow.loadURL(url);
+			} else gameWindow.loadURL(url);
 		} else shell.openExternal(url);
 	};
 
@@ -229,12 +226,12 @@ const initEditorWindow = () => {
 	editorWindow.setMenu(null);
 	editorWindow.rpc = rpc;
 
-	editorWindow.loadURL('https://krunker.io/editor.html', consts.NO_CACHE);
+	editorWindow.loadURL('https://krunker.io/editor.html');
 
 	let nav = (e, url) => {
 		e.preventDefault();
 		if (url.isKrunker() && !url.isEditor()) {
-			gameWindow.loadURL(url, consts.NO_CACHE);
+			gameWindow.loadURL(url);
 		}
 	}
 
@@ -274,20 +271,20 @@ const initSocialWindow = (url) => {
 	socialWindow.setMenu(null);
 	socialWindow.rpc = rpc;
 
-	socialWindow.loadURL(url, consts.NO_CACHE);
+	socialWindow.loadURL(url);
 
 	let nav = (e, url) => {
 		e.preventDefault();
 		if (url.isKrunker()) {
 			if (url.isEditor()) {
 				if (!editorWindow) initEditorWindow();
-				else editorWindow.loadURL(url, consts.NO_CACHE);
+				else editorWindow.loadURL(url);
 			} else if (url.isSocial()) {
-				socialWindow.loadURL(url, consts.NO_CACHE);
+				socialWindow.loadURL(url);
 			} else if (url.isViewer()) {
 				if (!viewerWindow) initViewerWindow(url);
-				else viewerWindow.loadURL(url, consts.NO_CACHE);
-			} else gameWindow.loadURL(url, consts.NO_CACHE);
+				else viewerWindow.loadURL(url);
+			} else gameWindow.loadURL(url);
 		}
 	}
 
@@ -327,20 +324,20 @@ const initViewerWindow = (url) => {
 	viewerWindow.setMenu(null);
 	viewerWindow.rpc = rpc;
 
-	viewerWindow.loadURL(url, consts.NO_CACHE);
+	viewerWindow.loadURL(url);
 
 	let nav = (e, url) => {
 		e.preventDefault();
 		if (url.isKrunker()) {
 			if (url.isEditor()) {
 				if (!editorWindow) initEditorWindow();
-				else editorWindow.loadURL(url, consts.NO_CACHE);
+				else editorWindow.loadURL(url);
 			} else if (url.isSocial()) {
 				if (!socialWindow) initSocialWindow(url);
-				else socialWindow.loadURL(url, consts.NO_CACHE);
+				else socialWindow.loadURL(url);
 			} else if (url.isViewer()) {
-				viewerWindow.loadURL(url, consts.NO_CACHE);
-			} else gameWindow.loadURL(url, consts.NO_CACHE);
+				viewerWindow.loadURL(url);
+			} else gameWindow.loadURL(url);
 		}
 	}
 
@@ -369,18 +366,13 @@ const initSplashWindow = () => {
 		frame: false,
 		// skipTaskbar: true, // Enabled by default
 		center: true,
+		resizable: false,
 		webPreferences: {
 			nodeIntegration: true
 		}
 	});
 	splashWindow.setMenu(null);
-	splashWindow.setResizable(false);
-	//splashWindow.setAlwaysOnTop(true, "floating", 1);
-	splashWindow.loadURL(url.format({
-		pathname: consts.joinPath(__dirname, 'splash.html'),
-		protocol: 'file:',
-		slashes: true
-	}));
+	splashWindow.loadURL(consts.joinPath(__dirname, 'splash.html'));
 	splashWindow.webContents.once('did-finish-load', () => initUpdater());
 	if (consts.DEBUG) splashWindow.webContents.openDevTools({ mode: 'undocked' }); // Disabled by default
 };
@@ -446,7 +438,7 @@ const initUpdater = () => {
 	autoUpdater.on('update-available', (info) => {
 		splashWindow.webContents.send('update-available', info);
 		if (autoUpdateType == "check") setTimeout(() => initGameWindow(), 1000);
-	})
+	});
 
 	autoUpdater.on('update-not-available', (info) => {
 		splashWindow.webContents.send('update-not-available', info);
@@ -499,12 +491,18 @@ const initShortcuts = () => {
 		toggleDevTools: {
 			key: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
 			press: () => gameWindow.toggleDevTools()
-		}
+		}	
 	}
 	Object.keys(KEY_BINDS).forEach(k => {
 		shortcut.register(gameWindow, KEY_BINDS[k].key, () => KEY_BINDS[k].press());
 	});
-}
+};
+
+['SIGTERM', 'SIGHUP', 'SIGINT', 'SIGBREAK'].forEach((signal) => {
+  process.on(signal, _ => {
+	app.quit()
+  })
+});
 
 app.once('ready', () => initSplashWindow());
 app.on('activate', () => {
@@ -515,4 +513,5 @@ app.once('before-quit', () => {
 	shortcut.unregisterAll();
 	gameWindow.close();
 });
-app.once('window-all-closed', () => app.quit());
+app.on('window-all-closed', () => app.quit());
+app.on('quit', () => app.quit());

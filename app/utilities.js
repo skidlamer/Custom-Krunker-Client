@@ -5,7 +5,7 @@ const consts = require('./constants.js');
 const url = require('url');
 const rimraf = require('rimraf');
 
-const CACHE_PATH = consts.joinPath(consts.joinPath(remote.app.getPath('appData'), remote.app.getName()), "Cache");
+const CACHE_PATH = consts.joinPath(consts.joinPath(remote.app.getPath('appData'), remote.app.name), "Cache");
 
 class Utilities {
 	constructor() {
@@ -97,8 +97,9 @@ class Utilities {
 			}
 		};
 		const inject = _ => {
-			var old = window.windows[0].gen;
-			window.windows[0].gen = _ => {
+			var old = window.windows[0].getSettings;
+			//window.windows[0].getCSettings = function() { // next update
+			window.windows[0].getSettings = function() {
 				var tmpHTML = "";
 				for (var key in window.utilities.settings) {
 					if (window.utilities.settings[key].noShow) continue;
@@ -115,7 +116,8 @@ class Utilities {
 				  <a onclick='window.utilities.relaunchClient()' class='menuLink'>Relaunch Client</a>
 				  |
 				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.getName()))' class='menuLink'>Open appData</a>
-	           `;
+			   `;
+			   console.log("old:", old, "gen:", windows[0].gen, "genList:", windows[0].genList, "tmpHTML:", tmpHTML)
 				return old() + tmpHTML;
 			}
 		}

@@ -1,6 +1,6 @@
 {
   "name": "io.krunker.desktop",
-  "version": "1.7.3-custom.8",
+  "version": "1.7.5-custom.0",
   "description": "Desktop Client For Krunker",
   "author": "Yendis Entertainment Pty Ltd",
   "main": "app/main.js",
@@ -16,6 +16,6 @@
     "yargs": "^14.2.0"
   },
   "devDependencies": {
-    "electron": "^6.0.12"
+    "electron": "^7.0.0"
   }
 }
