@@ -117,7 +117,6 @@ class Utilities {
 				  |
 				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.getName()))' class='menuLink'>Open appData</a>
 			   `;
-			   console.log("old:", old, "gen:", windows[0].gen, "genList:", windows[0].genList, "tmpHTML:", tmpHTML)
 				return old() + tmpHTML;
 			}
 		}
