@@ -1,15 +1,15 @@
 # Custom-Krunker-Client
 Customized Krunker Desktop Client.
 
-## Current Features
+## Current Features / What you can do
 - Add ability to change auto updater behavior from configs or `--update=<download|check|skip>` argument ( argument method overrides config )
 - Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
 - Add compatibility with custom fonts to few social and market pages ( optional )
 - Add keyboard shortcut for toggle DevTools
 - Add an button that opens `appData` directory
 - Add an button that relaunch the client
-- Add an option that always enables debug mode
-- Fix "Reset Addons" button behavior
+- Always enables debug mode ( optional )
+- Connect to the beta servers ( optional )
 - Fix splash screen font size
 - Hide ads ( not actually blocking traffic for Free KR compatibility / optional )
 - Make splash screen background and font customizable
@@ -23,3 +23,4 @@ If you're Mac or Linux user, get [electron-builder](https://www.electron.build/)
 #### Tips
 - Options that added by the custom client is highlighted in yellow
 - Some of options requires restart the client or reload the page to apply
+- **Use this client at your own risk!**
