@@ -18,8 +18,9 @@ let gameWindow = null,
 	splashWindow = null,
 	promptWindow = null,
 	current = 0;
+
 const autoUpdateType = (/^(download|check|skip)$/.exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
-consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode")
+consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode")	
 
 const initLogging = () => {
 	log.debug("-------------------- Client Start --------------------");
@@ -91,32 +92,31 @@ const initDiscordRPC = () => {
 
 	if (!config.get("utilities_disableDiscordRPC")) {
 		rpc.login({ 'clientId': consts.DISCORD_ID })
-			.then(() => {
-				rpc.isConnected = true;
-				rpc.setActivity2 = function(win, obj) {
-					if (current == win) rpc.setActivity(obj);
-				};
-				rpc.on('RPC_MESSAGE_RECEIVED', (event) => {
-					//console.log('RPC_MESSAGE_RECEIVED', event);
-					if (!gameWindow) return;
-					gameWindow.webContents.send('log', ['RPC_MESSAGE_RECEIVED', event]);
-				});
-				rpc.subscribe('ACTIVITY_JOIN', ({ secret }) => {
-					if (!gameWindow) return;
-					let parse = secret.split('|');
-					if (parse[2].isCode()) {
-						gameWindow.loadURL('https://' + parse[0] + '/?game=' + parse[2]);
-					}
-				});
-				rpc.subscribe('ACTIVITY_INVITE', (event) => {
-					if (!gameWindow) return;
-					gameWindow.webContents.send('ACTIVITY_INVITE', event);
-				});
-
+		.then(() => {
+			rpc.isConnected = true;
+			rpc.setActivity2 = function(win, obj) {
+				if (current == win) rpc.setActivity(obj);
+			};
+			rpc.on('RPC_MESSAGE_RECEIVED', (event) => {
+				//console.log('RPC_MESSAGE_RECEIVED', event);
+				if (!gameWindow) return;
+				gameWindow.webContents.send('log', ['RPC_MESSAGE_RECEIVED', event]);
+			});
+			rpc.subscribe('ACTIVITY_JOIN', ({ secret }) => {
+				if (!gameWindow) return;
+				let parse = secret.split('|');
+				if (parse[2].isCode()) {
+					gameWindow.loadURL('https://' + parse[0] + '/?game=' + parse[2]);
+				}
+			});
+			rpc.subscribe('ACTIVITY_INVITE', (event) => {
+				if (!gameWindow) return;
+				gameWindow.webContents.send('ACTIVITY_INVITE', event);
+			});
 				rpc.subscribe('ACTIVITY_JOIN_REQUEST', (user) => {
-					if (!gameWindow) return;
-					gameWindow.webContents.send('ACTIVITY_JOIN_REQUEST', user);
-				});
+				if (!gameWindow) return;
+				gameWindow.webContents.send('ACTIVITY_JOIN_REQUEST', user);
+			});
 		})
 		.catch(console.error);
 	}
@@ -150,7 +150,7 @@ const initGameWindow = () => {
 					allFilesSync(filePath);
 			} else {
 				if (!(/\.(html|js)/g.test(file))) {
-					let krunk = '*://krunker.io' + filePath.replace(swapFolder, '').replace(/\\/g, '/') + '*';
+					let krunk = `*://${config.get("utilities_betaServer", false) ? "beta." : ""}krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/') + '*'}`
 					swap.filter.urls.push(krunk);
 					swap.files[krunk.replace(/\*/g, '')] = url.format({
 						pathname: filePath,
@@ -168,7 +168,7 @@ const initGameWindow = () => {
 		});
 	}
 
-	gameWindow.loadURL('https://krunker.io');
+	gameWindow.loadURL(`https://${config.get("utilities_betaServer", false) ? "beta." : ""}krunker.io`);
 
 	let nav = (e, url) => {
 		e.preventDefault();
@@ -226,7 +226,7 @@ const initEditorWindow = () => {
 	editorWindow.setMenu(null);
 	editorWindow.rpc = rpc;
 
-	editorWindow.loadURL('https://krunker.io/editor.html');
+	editorWindow.loadURL(`https://${config.get("utilities_betaServer", false) ? "beta." : ""}krunker.io/editor.html`);
 
 	let nav = (e, url) => {
 		e.preventDefault();
@@ -425,27 +425,41 @@ initPromptWindow();
 
 const initUpdater = () => {
 	if (consts.DEBUG || process.platform == 'darwin' || autoUpdateType == "skip") return initGameWindow();
-	autoUpdater.on('checking-for-update', (info) => splashWindow.webContents.send('checking-for-update'));
+	let updateCheckFallback = null;
+	autoUpdater.on('checking-for-update', (info) => {
+		splashWindow.webContents.send('checking-for-update');
+		updateCheckFallback = setTimeout(function() { 
+			splashWindow.webContents.send('update-not-available', info);
+			setTimeout(() => initGameWindow(), 1000);
+		}, 15000);
+	});
 
 	autoUpdater.on('error', (err) => {
+		if (updateCheckFallback) clearTimeout(updateCheckFallback);
 		splashWindow.webContents.send('update-error', err);
 		setTimeout(() => initGameWindow(), 1000);
 		//app.quit();
 	});
 
-	autoUpdater.on('download-progress', (info) => splashWindow.webContents.send('download-progress', info));
+	autoUpdater.on('download-progress', (info) => {
+		if (updateCheckFallback) clearTimeout(updateCheckFallback);
+		splashWindow.webContents.send('download-progress', info);
+	});
 
 	autoUpdater.on('update-available', (info) => {
+		if (updateCheckFallback) clearTimeout(updateCheckFallback);
 		splashWindow.webContents.send('update-available', info);
 		if (autoUpdateType == "check") setTimeout(() => initGameWindow(), 1000);
 	});
 
 	autoUpdater.on('update-not-available', (info) => {
+		if (updateCheckFallback) clearTimeout(updateCheckFallback);
 		splashWindow.webContents.send('update-not-available', info);
 		setTimeout(() => initGameWindow(), 1000);
 	});
 
 	autoUpdater.on('update-downloaded', (info) => {
+		if (updateCheckFallback) clearTimeout(updateCheckFallback);
 		splashWindow.webContents.send('update-downloaded', info);
 		setTimeout(() => autoUpdater.quitAndInstall(), 2500);
 	});
@@ -491,7 +505,7 @@ const initShortcuts = () => {
 		toggleDevTools: {
 			key: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
 			press: () => gameWindow.toggleDevTools()
-		}	
+		}
 	}
 	Object.keys(KEY_BINDS).forEach(k => {
 		shortcut.register(gameWindow, KEY_BINDS[k].key, () => KEY_BINDS[k].press());

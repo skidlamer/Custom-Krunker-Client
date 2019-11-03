@@ -1,6 +1,6 @@
 {
   "name": "io.krunker.desktop",
-  "version": "1.7.5-custom.0",
+  "version": "1.7.6-custom.0",
   "description": "Desktop Client For Krunker",
   "author": "Yendis Entertainment Pty Ltd",
   "main": "app/main.js",
@@ -10,12 +10,12 @@
     "electron-localshortcut": "^3.1.0",
     "electron-log": "^3.0.8",
     "electron-store": "^5.0.0",
-    "electron-updater": "^4.1.2",
+    "electron-updater": "^4.2.0",
     "rimraf": "^3.0.0",
     "v8-compile-cache": "^2.1.0",
     "yargs": "^14.2.0"
   },
   "devDependencies": {
-    "electron": "^7.0.0"
+    "electron": "^7.0.1"
   }
 }

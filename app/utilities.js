@@ -79,6 +79,11 @@ class Utilities {
 				val: "download",
 				html: () => generateSelectHTML("autoUpdateType", consts.autoUpdateTypes)
 			},
+			betaServer: {
+				name: "Beta Server",
+				val: false,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("betaServer", this.checked)' ${this.settings.betaServer.val ? "checked" : ""}><span class='slider'></span></label>`
+			},
 			disableResourceSwapper: {
 				name: "Disable Resource Swapper",
 				val: false,
@@ -94,12 +99,10 @@ class Utilities {
 				pre: "<div class='setHed customUtility'>Debugging</div>",
 				val: false,
 				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("debugMode", this.checked)' ${this.settings.debugMode.val ? "checked" : ""}><span class='slider'></span></label>`
-			}
-		};
+				}
+			};
 		const inject = _ => {
-			var old = window.windows[0].getSettings;
-			//window.windows[0].getCSettings = function() { // next update
-			window.windows[0].getSettings = function() {
+			window.windows[0].getCSettings = function() { // WILL ONLY WORK FOR 1.8.3+
 				var tmpHTML = "";
 				for (var key in window.utilities.settings) {
 					if (window.utilities.settings[key].noShow) continue;
@@ -116,15 +119,15 @@ class Utilities {
 				  <a onclick='window.utilities.relaunchClient()' class='menuLink'>Relaunch Client</a>
 				  |
 				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.getName()))' class='menuLink'>Open appData</a>
-			   `;
-				return old() + tmpHTML;
-			}
+	           `;
+				return tmpHTML;
+			};
 		}
 		let generateSelectHTML = (key, options) => {
 			var selectHTML = '<select\x20onchange=\x27window.utilities.setSetting(\x22' + key + '\x22,\x20this.value)\x27\x20class=\x27inputGrey2\x27>';
-                for (let option in options)
-                    selectHTML += '<option\x20value=\x27' + option + '\x27\x20' + (option == this.settings[key]['val'] ? 'selected' : '') + '>' + options[option] + '</option>';
-                return selectHTML += '</select>';
+            for (let option in options)
+        		selectHTML += '<option\x20value=\x27' + option + '\x27\x20' + (option == this.settings[key]['val'] ? 'selected' : '') + '>' + options[option] + '</option>';
+        	return selectHTML += '</select>';
 		}
 		let waitForWindows = setInterval(_ => {
 			if (window.windows) {
@@ -202,7 +205,7 @@ class Utilities {
 		remote.app.relaunch(options)
 		remote.app.exit(0)
 	}
-
+	
 	onLoad() {
 		this.fixMenuSettings();
 		this.createWatermark();
