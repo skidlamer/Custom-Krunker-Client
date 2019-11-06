@@ -1,6 +1,8 @@
 # Custom-Krunker-Client
 Customized Krunker Desktop Client.
 
+We have a [Discord Server](https://discord.gg/XmcW7ny)!
+
 ## Current Features / What you can do
 - Add ability to change auto updater behavior from configs or `--update=<download|check|skip>` argument ( argument method overrides config )
 - Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
