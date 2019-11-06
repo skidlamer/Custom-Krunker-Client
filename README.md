@@ -16,6 +16,7 @@ Customized Krunker Desktop Client.
 - Connects to the beta servers ( optional )
 - Customizable Game Overlay offsets
 - Fixes splash screen font size
+- Patches resource swapper to work with beta server
 - Hide ads ( not actually blocking traffic for Free KR compatibility / optional )
 - Makes splash screen background and font customizable
 - Few minor tweaks for debugging
