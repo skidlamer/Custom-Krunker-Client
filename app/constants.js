@@ -67,5 +67,3 @@ module.exports.autoUpdateTypes = {
 	check: "Check",
 	skip: "Skip"
 }
-	
-module.exports.audioFileNames = ["aim_0.mp3", "aim_1.mp3", "ambient_1.mp3", "ambient_2.mp3", "ambient_3.mp3", "ambient_4.mp3", "buy_1.mp3", "case_0.mp3", "case_1.mp3", "cheer_0.mp3", "explosion.mp3", "fart_0.mp3", "gclick_0.mp3", "headshot_0.mp3", "hit_0.mp3", "impact_0.mp3", "jump_0.mp3", "jump_1.mp3", "nuke_0.mp3", "pick_0.mp3", "reload_1.mp3", "reload_2.mp3", "reward.mp3", "rico_1.mp3", "rico_2.mp3", "siren_0.mp3", "slide_0.mp3", "spray.mp3", "step_0.mp3", "step_1.mp3", "step_2.mp3", "store.mp3", "swish_0.mp3", "swish_1.mp3", "taunt_0.mp3", "taunt_1.mp3", "taunt_2.mp3", "taunt_3.mp3", "tick_0.mp3", "weapon_1.mp3", "weapon_10.mp3", "weapon_11.mp3", "weapon_13.mp3", "weapon_15.mp3", "weapon_17.mp3", "weapon_1_0.mp3", "weapon_2.mp3", "weapon_3.mp3", "weapon_4.mp3", "weapon_5.mp3", "weapon_6.mp3", "weapon_7.mp3", "weapon_8.mp3", "weapon_9.mp3", "whizz_0.mp3", "whizz_1.mp3"]

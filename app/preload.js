@@ -153,22 +153,25 @@ document.addEventListener("DOMContentLoaded", () => {
 		window.onbeforeunload = null;
 	}
 
-	// Create a CSS that forces ads to be hidden and patches custom font issues if enabled in config
-	let patchCSS = document.createElement("style")
-	patchCSS.innerText = `.customUtility {
-		color: #FFCC4D
+	if (location.href.isGame()) {
+		// Custom CSS for utilities
+		let customUtilityCSS = document.createElement("style")
+		customUtilityCSS.innerHTML = `.customUtility {
+			color: #FFCC4D
+		}`
+		document.head.appendChild(customUtilityCSS)
 	}
-	${config.get("utilities_hideAds", true) ? `#aHolder, #pre-content-container {
-		display: none !important
-	}` : ""}
-	${config.get("utilities_customFontsCSSFix", true) ? `.purchBtn, .purchInfoBtn {
-		position: absolute;
-		bottom: 11px;
+	if (location.href.isSocial()) {
+		// CSS used in utilities
+		let newUtilityCSS = document.createElement("style")
+		newUtilityCSS.innerHTML = `${config.get("utilities_customFontsCSSFix", true) ? `.purchBtn, .purchInfoBtn {
+			position: absolute;
+			bottom: 11px;
+		}
+		.scrollItem > div {
+			overflow: auto;
+		}` : ""}`
+		document.head.appendChild(newUtilityCSS)
 	}
-	.scrollItem > div {
-		overflow: auto;
-	}` : ""}`
-	document.head.appendChild(patchCSS)
 
-	if (config.get("utilities_preloadAudio", true)) consts.audioFileNames.forEach(fileName => fetch(`${location.origin}/sound/${fileName}`))
 }, false);

@@ -9,6 +9,7 @@ const CACHE_PATH = consts.joinPath(consts.joinPath(remote.app.getPath('appData')
 
 class Utilities {
 	constructor() {
+		this.consts = null;
 		this.settings = null;
 		this.onLoad();
 	}
@@ -49,19 +50,48 @@ class Utilities {
 			},
 			customFontsCSSFix: {
 				name: "Custom Fonts CSS Fix",
-				pre: "<div class='setHed customUtility'>Patches</div>",	
+				pre: "<div class='setHed customUtility'>Patch</div>",	
 				val: true,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("customFontsCSSFix", this.checked)' ${this.settings.customFontsCSSFix.val ? "checked" : ""}><span class='slider'></span></label>`
+				html: () => generateHTML("checkbox", "customFontsCSSFix", this)
 			},
 			hideAds: {
 				name: "Hide Ads",
-				val: true,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("hideAds", this.checked)' ${this.settings.hideAds.val ? "checked" : ""}><span class='slider'></span></label>`
+				pre: "<div class='setHed customUtility'>Interface Tweak</div>",
+				val: false,
+				html: () => generateHTML("checkbox", "hideAds", this),
+				set: () => {
+					if (this.settings.hideAds.val) document.head.appendChild(this.consts.css.hideAds)
+					else {
+						if (this.consts.css.hideAds.parentElement) this.consts.css.hideAds.remove()
+					}
+				}
 			},
-			preloadAudio: {
-				name: "Preload Audio Files",
-				val: true,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("preloadAudio", this.checked)' ${this.settings.preloadAudio.val ? "checked" : ""}><span class='slider'></span></label>`
+			overlayOffsetX: {
+				name: "Game Overlay X Offset",
+				val: 0,
+				min: -100,
+				max: 100,
+				step: 1,
+				html: () => generateHTML("slider", "overlayOffsetX", this),
+				set: () => document.getElementById("overlay").style.transform = `translate(${this.settings.overlayOffsetX.val}%, ${this.settings.overlayOffsetY.val}%)`
+			},
+			overlayOffsetY: {
+				name: "Game Overlay Y Offset",
+				val: 0,
+				min: -100,
+				max: 100,
+				step: 1,
+				html: () => generateHTML("slider", "overlayOffsetY", this),
+				set: () => document.getElementById("overlay").style.transform = `translate(${this.settings.overlayOffsetX.val}%, ${this.settings.overlayOffsetY.val}%)`
+			},
+			overlayOpacity: {
+				name: "Crosshair & Nametag & Damage Opacity",
+				val: 1,
+				min: 0,
+				max: 1,
+				step: 0.01,
+				html: () => generateHTML("slider", "overlayOpacity", this),
+				set: () => document.getElementById("game-overlay").style.opacity = this.settings.overlayOpacity.val
 			},
 			customSplashBackground: {
 				name: "Custom Splash Background",
@@ -77,7 +107,7 @@ class Utilities {
 			autoUpdateType: {
 				name: "Auto Update Type",
 				val: "download",
-				html: () => generateSelectHTML("autoUpdateType", consts.autoUpdateTypes)
+				html: () => generateHTML("select", "autoUpdateType", this, consts.autoUpdateTypes)
 			},
 			betaServer: {
 				name: "Beta Server",
@@ -99,8 +129,18 @@ class Utilities {
 				pre: "<div class='setHed customUtility'>Debugging</div>",
 				val: false,
 				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("debugMode", this.checked)' ${this.settings.debugMode.val ? "checked" : ""}><span class='slider'></span></label>`
-				}
-			};
+			},
+			dumpResources: {
+				name: "Dump Resources",
+				val: false,
+				html: () => generateHTML("checkbox", "dumpResources", this)
+			},
+			dumpPath: {
+				name: "Dump Path",
+				val: "",
+				html: () => generateHTML("url", "dumpPath", this, "Resource Dump Output Path")
+			}
+		};
 		const inject = _ => {
 			window.windows[0].getCSettings = function() { // WILL ONLY WORK FOR 1.8.3+
 				var tmpHTML = "";
@@ -123,11 +163,15 @@ class Utilities {
 				return tmpHTML;
 			};
 		}
-		let generateSelectHTML = (key, options) => {
-			var selectHTML = '<select\x20onchange=\x27window.utilities.setSetting(\x22' + key + '\x22,\x20this.value)\x27\x20class=\x27inputGrey2\x27>';
-            for (let option in options)
-        		selectHTML += '<option\x20value=\x27' + option + '\x27\x20' + (option == this.settings[key]['val'] ? 'selected' : '') + '>' + options[option] + '</option>';
-        	return selectHTML += '</select>';
+		function generateHTML(type, name, object, extra) {
+            if ('checkbox' == type) return '<label class="switch"><input type="checkbox" onclick="window.utilities.setSetting(\x27' + name + '\x27, this.checked)"\n' + (object.settings[name]['val'] ? 'checked' : '') + '><span class="slider"></span></label>';
+            if ('slider' == type) return '<input type="number" class="sliderVal" id="slid_input_utilities_' + name + '"\nmin="' + object.settings[name]['min'] + '" max="' + object.settings[name]['max'] + '" value="' + object.settings[name]['val'] + '" onkeypress="window.delayExecuteClient(\x27' + name + '\x27, this)" style="border-width:0px"/>\n<div class="slidecontainer">\n<input type="range" id="slid_utilities_' + name + '" min="' + object.settings[name]['min'] + '" max="' + object.settings[name]['max'] + '" step="' + object.settings[name]['step'] + '"\nvalue="' + object.settings[name]['val'] + '" class="sliderM" oninput="window.utilities.setSetting(\x27' + name + '\x27, this.value)"></div>';
+            if ('select' == type) {
+                let temp = '<select onchange="window.utilities.setSetting(\x27' + name + '\x27, this.value)" class="inputGrey2">';
+                for (let option in extra) temp += '<option value="' + option + '" ' + (option == object.settings[name]['val'] ? 'selected' : '') + '>' + extra[option] + '</option>';
+                return temp += '</select>';
+            }
+            return '<input type="' + type + '" name="' + type + '" id="slid_utilities_' + name + '"\n' + ('color' == type ? 'style="float:right;margin-top:5px"' : 'class="inputGrey2" placeholder="' + extra + '"') + '\nvalue="' + object.settings[name]['val'] + '" oninput="window.utilities.setSetting(\x27' + name + '\x27, this.value)"/>';
 		}
 		let waitForWindows = setInterval(_ => {
 			if (window.windows) {
@@ -178,10 +222,13 @@ class Utilities {
 		}
 	}
 
+	// Newer function
 	setSetting(t, e) {
 		this.settings[t].val = e;
 		config.set(`utilities_${t}`, e);
-		if (document.getElementById(`slid_utilities_${t}`)) document.getElementById(`slid_utilities_${t}`).innerHTML = e;
+		if (document.getElementById(`slid_utilities_${t}`)) document.getElementById(`slid_utilities_${t}`).value = e;
+		if (document.getElementById(`slid_input_utilities_${t}`)) document.getElementById(`slid_input_utilities_${t}`).value = e;
+
 		if (this.settings[t].set) this.settings[t].set(e);
 	}
 
@@ -205,12 +252,37 @@ class Utilities {
 		remote.app.relaunch(options)
 		remote.app.exit(0)
 	}
+
+	initConsts() {
+		// CSS stuff used by utilities
+		function generateStyle (text) {
+			let newElement = document.createElement("style")
+			newElement.innerHTML = text
+			return newElement
+		}
+
+		this.consts = {
+			css: {
+				hideAds: generateStyle`#aHolder, #pre-content-container {
+					display: none !important
+				}`
+			}
+		}
+	}
 	
 	onLoad() {
+		this.initConsts();
 		this.fixMenuSettings();
 		this.createWatermark();
 		this.createSettings();
 		window.addEventListener("keydown", event => this.keyDown(event));
+
+		window.timeouts = {}
+		window.delayExecuteClient = function (name, object, delay = 600) {
+            return clearTimeout(timeouts[name]), timeouts[name] = setTimeout(function () {
+                window.utilities.setSetting(name, object['value']);
+            }, delay), true;
+        };
 	}
 }
 

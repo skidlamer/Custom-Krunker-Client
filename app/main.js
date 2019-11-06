@@ -1,5 +1,5 @@
 require('v8-compile-cache');
-const { BrowserWindow, app, shell, Menu, ipcMain } = require('electron');
+const { BrowserWindow, app, shell, Menu, ipcMain, net } = require('electron');
 const shortcut = require('electron-localshortcut');
 const consts = require('./constants.js');
 const url = require('url');
@@ -9,6 +9,7 @@ const config = new Store();
 const log = require('electron-log');
 const fs = require('fs');
 const DiscordRPC = require('discord-rpc');
+const path = require("path")
 
 let rpc = null;
 let gameWindow = null,
@@ -150,8 +151,8 @@ const initGameWindow = () => {
 					allFilesSync(filePath);
 			} else {
 				if (!(/\.(html|js)/g.test(file))) {
-					let krunk = `*://${config.get("utilities_betaServer", false) ? "beta." : ""}krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/') + '*'}`
-					swap.filter.urls.push(krunk);
+					let krunk = `*://krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}`
+					swap.filter.urls.push(krunk, krunk.replace("://", "://beta."));
 					swap.files[krunk.replace(/\*/g, '')] = url.format({
 						pathname: filePath,
 						protocol: 'file:',
@@ -164,8 +165,32 @@ const initGameWindow = () => {
 	if (!config.get("utilities_disableResourceSwapper")) allFilesSync(swapFolder);
 	if (swap.filter.urls.length) {
 		gameWindow.webContents.session.webRequest.onBeforeRequest(swap.filter, (details, callback) => {
-			callback({ cancel: false, redirectURL: swap.files[details.url.replace(/https|http|(\?.*)|(#.*)/gi, '')] || details.url });
+			callback({ cancel: false, redirectURL: swap.files[details.url.replace(/https|http|(\?.*)|(#.*)|(?<=:\/\/)beta./gi, '')] || details.url });
 		});
+	}
+
+	// Resource Dumper
+	if (config.get("utilities_dumpResources", false)) {
+		let dumpedURLs = []
+		gameWindow.webContents.session.webRequest.onCompleted(details => {
+			if (details.statusCode == 200 && /^http(s?):\/\/(beta\.)?krunker.io\/*/.test(details.url) && !dumpedURLs.includes(details.url)) {
+				dumpedURLs.push(details.url)
+				const request = net.request(details.url)
+				let raw = ""
+				request.on("response", res => {
+					if (res.statusCode == 200) {
+						res.setEncoding("binary")
+						res.on("data", chunk => raw += chunk)
+						res.on("end", () => {
+							let target = new url.URL(details.url)
+							if (!fs.existsSync(path.join(config.get("utilities_dumpPath", ""), target.hostname, path.dirname(target.pathname)))) fs.mkdirSync(path.join(config.get("utilities_dumpPath", ""), target.hostname, path.dirname(target.pathname)), { recursive: true })
+							fs.writeFileSync(path.join(config.get("utilities_dumpPath", ""), target.hostname, target.pathname == "/" ? "index.html" : target.pathname), raw, "binary")
+						})
+					}
+				})
+				request.end()
+			}
+		})
 	}
 
 	gameWindow.loadURL(`https://${config.get("utilities_betaServer", false) ? "beta." : ""}krunker.io`);
@@ -372,7 +397,12 @@ const initSplashWindow = () => {
 		}
 	});
 	splashWindow.setMenu(null);
-	splashWindow.loadURL(consts.joinPath(__dirname, 'splash.html'));
+	// splashWindow.loadURL(consts.joinPath(__dirname, 'splash.html'));
+	splashWindow.loadURL(url.format({
+		pathname: consts.joinPath(__dirname, 'splash.html'),
+		protocol: 'file:',
+		slashes: true
+	}));
 	splashWindow.webContents.once('did-finish-load', () => initUpdater());
 	if (consts.DEBUG) splashWindow.webContents.openDevTools({ mode: 'undocked' }); // Disabled by default
 };
