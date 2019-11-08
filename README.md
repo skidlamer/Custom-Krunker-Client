@@ -1,5 +1,5 @@
 # Custom-Krunker-Client
-Customized Krunker Desktop Client.
+The Customized Krunker Desktop Client.
 
 We have a [Discord Server](https://discord.gg/XmcW7ny)!
 
