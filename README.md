@@ -15,6 +15,7 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 - Ability to disable Discord RPC ( optional )
 - Ability to dump network resources ( useful for making mods and customizations / may recude performance / optional / disable Resource Swapper if you want to dump all files since it prevents dumper from duming some files )
 - Always enable debug mode ( optional )
+- Better "Clear Cache" button ( fixed a bug & works faster )
 - Connects to the beta servers ( optional )
 - Customizable Game Overlay offsets
 - Fixes splash screen font size
