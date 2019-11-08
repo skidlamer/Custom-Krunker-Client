@@ -53,9 +53,7 @@ String.prototype.isKrunker = function() {
 	return module.exports.SITE_REGEX.test(this + '');
 };
 
-module.exports.joinPath = function(foo, bar) {
-	return path.join(foo, bar);
-}
+module.exports.joinPath = path.join
 
 module.exports.hexToRGB = hex => hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,
 		(m, r, g, b) => '#' + r + r + g + g + b + b)
@@ -66,4 +64,17 @@ module.exports.autoUpdateTypes = {
 	download: "Download",
 	check: "Check",
 	skip: "Skip"
+}
+
+module.exports.css = {
+	customFontsFix: `.purchBtn, .purchInfoBtn {
+		position: absolute;
+		bottom: 11px;
+	}
+	.scrollItem > div {
+		overflow: auto;
+	}`,
+	hideAds: `#aHolder, #pre-content-container {
+		display: none !important
+	}`
 }

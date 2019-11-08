@@ -164,13 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (location.href.isSocial()) {
 		// CSS used in utilities
 		let newUtilityCSS = document.createElement("style")
-		newUtilityCSS.innerHTML = `${config.get("utilities_customFontsCSSFix", true) ? `.purchBtn, .purchInfoBtn {
-			position: absolute;
-			bottom: 11px;
-		}
-		.scrollItem > div {
-			overflow: auto;
-		}` : ""}`
+		newUtilityCSS.innerHTML = `${config.get("utilities_customFontsCSSFix", true) ? consts.css.customFontsFix : ""}
+		${config.get("utilities_hideAds", true) ? consts.css.hideAds : ""}`
 		document.head.appendChild(newUtilityCSS)
 	}
 

@@ -4,12 +4,13 @@ const config = new Store();
 const consts = require('./constants.js');
 const url = require('url');
 const rimraf = require('rimraf');
+const fs = require("fs")
 
-const CACHE_PATH = consts.joinPath(consts.joinPath(remote.app.getPath('appData'), remote.app.name), "Cache");
+// const CACHE_PATH = consts.joinPath(remote.app.getPath('appData'), remote.app.name, "Cache");
 
 class Utilities {
 	constructor() {
-		this.consts = null;
+		this.consts = {};
 		this.settings = null;
 		this.onLoad();
 	}
@@ -66,26 +67,50 @@ class Utilities {
 					}
 				}
 			},
-			overlayOffsetX: {
-				name: "Game Overlay X Offset",
-				val: 0,
-				min: -100,
-				max: 100,
-				step: 1,
-				html: () => generateHTML("slider", "overlayOffsetX", this),
-				set: () => document.getElementById("overlay").style.transform = `translate(${this.settings.overlayOffsetX.val}%, ${this.settings.overlayOffsetY.val}%)`
+			scopeOffsetX: {
+				name: "Scope X Offset",
+				val: "0%",
+				html: () => generateHTML("text", "scopeOffsetX", this, "Scope X Offset CSS Value"),
+				set: () => document.getElementById("aimRecticle").style.transform = `translate(${this.settings.scopeOffsetX.val}, ${this.settings.scopeOffsetY.val})`
 			},
-			overlayOffsetY: {
+			scopeOffsetY: {
+				name: "Scope Y Offset",
+				val: "0%",
+				html: () => generateHTML("text", "scopeOffsetY", this, "Scope Y Offset CSS Value"),
+				set: () => document.getElementById("aimRecticle").style.transform = `translate(${this.settings.scopeOffsetX.val}, ${this.settings.scopeOffsetY.val})`
+			},
+			scopeOpacity: {
+				name: "Scope Opacity",
+				val: 1,
+				min: 0,
+				max: 1,
+				step: 0.01,
+				html: () => generateHTML("slider", "scopeOpacity", this),
+				set: () => document.getElementById("recticleImg").style.opacity = this.settings.scopeOpacity.val
+			},
+			gameOverlayOffsetX: {
+				name: "Game Overlay X Offset",
+				val: "0%",
+				html: () => generateHTML("text", "gameOverlayOffsetX", this, "Game Overlay X Offset CSS Value"),
+				set: () => document.getElementById("overlay").style.transform = `translate(${this.settings.gameOverlayOffsetX.val}, ${this.settings.gameOverlayOffsetY.val})`
+			},
+			gameOverlayOffsetY: {
 				name: "Game Overlay Y Offset",
-				val: 0,
-				min: -100,
-				max: 100,
-				step: 1,
-				html: () => generateHTML("slider", "overlayOffsetY", this),
-				set: () => document.getElementById("overlay").style.transform = `translate(${this.settings.overlayOffsetX.val}%, ${this.settings.overlayOffsetY.val}%)`
+				val: "0%",
+				html: () => generateHTML("text", "gameOverlayOffsetY", this, "Game Overlay Y Offset CSS Value"),
+				set: () => document.getElementById("overlay").style.transform = `translate(${this.settings.gameOverlayOffsetX.val}, ${this.settings.gameOverlayOffsetY.val})`
+			},
+			gameOverlayOpacity: {
+				name: "Game Overlay Opacity",
+				val: 1,
+				min: 0,
+				max: 1,
+				step: 0.01,
+				html: () => generateHTML("slider", "gameOverlayOpacity", this),
+				set: () => document.getElementById("overlay").style.opacity = this.settings.gameOverlayOpacity.val
 			},
 			overlayOpacity: {
-				name: "Crosshair & Nametag & Damage Opacity",
+				name: "Crosshair, Nametag, etc. Opacity",
 				val: 1,
 				min: 0,
 				max: 1,
@@ -95,7 +120,7 @@ class Utilities {
 			},
 			customSplashBackground: {
 				name: "Custom Splash Background",
-				pre: "<div class='setHed customUtility'>Even More Customization</div>",
+				pre: "<div class='setHed customUtility'>Splash Screen</div>",
 				val: "",
 				html: () => `<input type="url" name="url" class="inputGrey2" placeholder="Splash Screen Background Image Path/URL" value="${this.settings.customSplashBackground.val}" oninput="window.utilities.setSetting('customSplashBackground', this.value);">`
 			},
@@ -106,13 +131,9 @@ class Utilities {
 			},
 			autoUpdateType: {
 				name: "Auto Update Type",
+				pre: "<div class='setHed customUtility'>Client Tweak</div>",
 				val: "download",
 				html: () => generateHTML("select", "autoUpdateType", this, consts.autoUpdateTypes)
-			},
-			betaServer: {
-				name: "Beta Server",
-				val: false,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("betaServer", this.checked)' ${this.settings.betaServer.val ? "checked" : ""}><span class='slider'></span></label>`
 			},
 			disableResourceSwapper: {
 				name: "Disable Resource Swapper",
@@ -124,11 +145,11 @@ class Utilities {
 				val: false,
 				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("disableDiscordRPC", this.checked)' ${this.settings.disableDiscordRPC.val ? "checked" : ""}><span class='slider'></span></label>`
 			},
-			debugMode: {
-				name: "Debug Mode",
-				pre: "<div class='setHed customUtility'>Debugging</div>",
+			betaServer: {
+				name: "Beta Server",
+				pre: "<div class='setHed customUtility'>Network</div>",
 				val: false,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("debugMode", this.checked)' ${this.settings.debugMode.val ? "checked" : ""}><span class='slider'></span></label>`
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("betaServer", this.checked)' ${this.settings.betaServer.val ? "checked" : ""}><span class='slider'></span></label>`
 			},
 			dumpResources: {
 				name: "Dump Resources",
@@ -137,8 +158,14 @@ class Utilities {
 			},
 			dumpPath: {
 				name: "Dump Path",
-				val: "ResourceDump",
-				html: () => generateHTML("url", "dumpPath", this, "Resource Dump Output Path")
+				val: consts.joinPath(remote.app.getPath("documents"), "KrunkerResourceDump"),
+				html: () => "<a onclick='window.utilities.openDumpPath()' class='inputGrey2 menuLink'>Open</a>" + generateHTML("url", "dumpPath", this, "Resource Dump Output Path")
+			},
+			debugMode: {
+				name: "Debug Mode",
+				pre: "<div class='setHed customUtility'>Debugging</div>",
+				val: false,
+				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("debugMode", this.checked)' ${this.settings.debugMode.val ? "checked" : ""}><span class='slider'></span></label>`
 			}
 		};
 		const inject = _ => {
@@ -221,7 +248,7 @@ class Utilities {
 			// })
 
 			// Clear cache fix
-			remote.BrowserWindow.getFocusedWindow().webContents.session.clearCache().then(() => {
+			remote.getCurrentWindow().webContents.session.clearCache().then(() => {
 				alert("Cache cleared");
 				remote.app.relaunch();
 				remote.app.exit();
@@ -260,6 +287,11 @@ class Utilities {
 		remote.app.exit(0)
 	}
 
+	openDumpPath() {
+		if (!fs.existsSync(this.settings.dumpPath.val)) fs.mkdirSync(this.settings.dumpPath.val, { recursive: true })
+		remote.shell.openItem(this.settings.dumpPath.val)
+	}
+
 	initConsts() {
 		// CSS stuff used by utilities
 		function generateStyle (text) {
@@ -268,17 +300,12 @@ class Utilities {
 			return newElement
 		}
 
-		this.consts = {
-			css: {
-				hideAds: generateStyle`#aHolder, #pre-content-container {
-					display: none !important
-				}`
-			}
-		}
+		Object.entries(consts.css).forEach(entry => consts.css[entry[0]] = generateStyle(entry[1]))
+		this.consts.css = consts.css
 	}
-	
+
 	onLoad() {
-		this.initConsts();
+		this.initConsts()
 		this.fixMenuSettings();
 		this.createWatermark();
 		this.createSettings();
