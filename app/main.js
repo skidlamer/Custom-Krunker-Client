@@ -151,7 +151,7 @@ const initGameWindow = () => {
 					allFilesSync(filePath);
 			} else {
 				if (!(/\.(html|js)/g.test(file))) {
-					let krunk = `*://krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}`
+					let krunk = `*://krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}*`
 					swap.filter.urls.push(krunk, krunk.replace("://", "://beta."));
 					swap.files[krunk.replace(/\*/g, '')] = url.format({
 						pathname: filePath,
@@ -162,7 +162,7 @@ const initGameWindow = () => {
 			}
 		});
 	};
-	if (!config.get("utilities_disableResourceSwapper")) allFilesSync(swapFolder);
+	if (!config.get("utilities_disableResourceSwapper",)) allFilesSync(swapFolder);
 	if (swap.filter.urls.length) {
 		gameWindow.webContents.session.webRequest.onBeforeRequest(swap.filter, (details, callback) => {
 			callback({ cancel: false, redirectURL: swap.files[details.url.replace(/https|http|(\?.*)|(#.*)|(?<=:\/\/)beta./gi, '')] || details.url });
@@ -397,7 +397,7 @@ const initSplashWindow = () => {
 		}
 	});
 	splashWindow.setMenu(null);
-	// splashWindow.loadURL(consts.joinPath(__dirname, 'splash.html'));
+	// splashWindow.loadFile(consts.joinPath(__dirname, 'splash.html'));
 	splashWindow.loadURL(url.format({
 		pathname: consts.joinPath(__dirname, 'splash.html'),
 		protocol: 'file:',

@@ -137,7 +137,7 @@ class Utilities {
 			},
 			dumpPath: {
 				name: "Dump Path",
-				val: "",
+				val: "ResourceDump",
 				html: () => generateHTML("url", "dumpPath", this, "Resource Dump Output Path")
 			}
 		};
@@ -214,7 +214,14 @@ class Utilities {
 
 	clearCache() {
 		if (confirm("Are you sure you want to clear your cache? This will also refresh the page")) {
-			rimraf(CACHE_PATH, () => {
+			// rimraf(CACHE_PATH, () => {
+			// 	alert("Cache cleared");
+			// 	remote.app.relaunch();
+			// 	remote.app.exit();
+			// })
+
+			// Clear cache fix
+			remote.BrowserWindow.getFocusedWindow().webContents.session.clearCache().then(() => {
 				alert("Cache cleared");
 				remote.app.relaunch();
 				remote.app.exit();
