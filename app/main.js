@@ -182,9 +182,9 @@ const initGameWindow = () => {
 						res.setEncoding("binary")
 						res.on("data", chunk => raw += chunk)
 						res.on("end", () => {
-							let target = new url.URL(details.url)
-							if (!fs.existsSync(path.join(config.get("utilities_dumpPath", ""), target.hostname, path.dirname(target.pathname)))) fs.mkdirSync(path.join(config.get("utilities_dumpPath", ""), target.hostname, path.dirname(target.pathname)), { recursive: true })
-							fs.writeFileSync(path.join(config.get("utilities_dumpPath", ""), target.hostname, target.pathname == "/" ? "index.html" : target.pathname), raw, "binary")
+							let target = new url.URL(details.url), dumpPath = config.get("utilities_dumpPath", path.join(app.getPath("documents"), "KrunkerResourceDump"))
+							if (!fs.existsSync(path.join(dumpPath, target.hostname, path.dirname(target.pathname)))) fs.mkdirSync(path.join(dumpPath, target.hostname, path.dirname(target.pathname)), { recursive: true })
+							fs.writeFileSync(path.join(dumpPath, target.hostname, target.pathname == "/" ? "index.html" : target.pathname), raw, "binary")
 						})
 					}
 				})
