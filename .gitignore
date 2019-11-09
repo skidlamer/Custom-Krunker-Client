@@ -165,3 +165,7 @@ ts-gen
 
 # Used to accelerate CI builds
 .depshash
+
+# Custom
+
+.tools/
