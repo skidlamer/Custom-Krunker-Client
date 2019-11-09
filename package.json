@@ -1,24 +1,63 @@
 {
-  "name": "io.krunker.desktop",
-  "version": "1.7.8-custom.0",
-  "description": "Desktop Client For Krunker",
-  "author": "Yendis Entertainment Pty Ltd",
-  "main": "app/main.js",
-  "repository": "github:Mixaz017/Custom-Krunker-Client",
-  "dependencies": {
-    "discord-rpc": "^3.1.0",
-    "electron-localshortcut": "^3.2.0",
-    "electron-log": "^3.0.9",
-    "electron-store": "^5.1.0",
-    "electron-updater": "^4.2.0",
-    "rimraf": "^3.0.0",
-    "v8-compile-cache": "^2.1.0",
-    "yargs": "^14.2.0"
-  },
-  "devDependencies": {
-    "electron": "^7.1.1"
-  },
-  "scripts": {
-    "start": "electron ."
-  }
+	"name": "io.custom.krunker.desktop",
+	"version": "1.7.8-custom.1",
+	"description": "Customized Desktop Client For Krunker",
+	"author": "Mixaz",
+	"main": "app/main.js",
+	"repository": "github:Mixaz017/Custom-Krunker-Client",
+	"dependencies": {
+		"discord-rpc": "^3.1.0",
+		"electron-localshortcut": "^3.2.0",
+		"electron-log": "^3.0.9",
+		"electron-store": "^5.1.0",
+		"electron-updater": "^4.2.0",
+		"rimraf": "^3.0.0",
+		"v8-compile-cache": "^2.1.0",
+		"yargs": "^14.2.0"
+	},
+	"devDependencies": {
+		"electron": "^7.1.1"
+	},
+	"scripts": {
+		"start": "electron .",
+		"pack": "electron-builder --dir",
+		"dist": "electron-builder",
+		"postinstall": "electron-builder install-app-deps",
+		"release": "electron-builder"
+	},
+	"build": {
+		"appId": "io.custom.krunker.desktop",
+		"productName": "Custom Krunker Client",
+		"win": {
+			"target": [
+				{
+					"target": "nsis",
+					"arch": [
+						"x64",
+						"ia32"
+					]
+				}
+			]
+		},
+		"nsis": {
+			"oneClick": false,
+			"perMachine": true,
+			"allowToChangeInstallationDirectory": true
+		},
+		"files": [
+			"**/*",
+			"!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+			"!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+			"!**/node_modules/*.d.ts",
+			"!**/node_modules/.bin",
+			"!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+			"!.editorconfig",
+			"!**/._*",
+			"!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+			"!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+			"!**/{appveyor.yml,.travis.yml,circle.yml}",
+			"!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+			"!{.tools,*.env,README.md}"
+		]
+	}
 }
