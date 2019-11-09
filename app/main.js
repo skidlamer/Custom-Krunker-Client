@@ -418,10 +418,10 @@ const initPromptWindow = () => {
 			height: 157,
 			show: false,
 			frame: false,
-			skipTaskbar: true,
+			// skipTaskbar: true,
 			alwaysOnTop: true,
 			resizable: false,
-			movable: false,
+			// movable: false,
 			darkTheme: true,
 			center: true,
 			webPreferences: {

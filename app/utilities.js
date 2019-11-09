@@ -58,7 +58,7 @@ class Utilities {
 			hideAds: {
 				name: "Hide Ads",
 				pre: "<div class='setHed customUtility'>Interface Tweak</div>",
-				val: false,
+				val: true,
 				html: () => generateHTML("checkbox", "hideAds", this),
 				set: () => {
 					if (this.settings.hideAds.val) document.head.appendChild(this.consts.css.hideAds)
@@ -145,12 +145,13 @@ class Utilities {
 				val: false,
 				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("disableDiscordRPC", this.checked)' ${this.settings.disableDiscordRPC.val ? "checked" : ""}><span class='slider'></span></label>`
 			},
-			betaServer: {
-				name: "Beta Server",
-				pre: "<div class='setHed customUtility'>Network</div>",
-				val: false,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("betaServer", this.checked)' ${this.settings.betaServer.val ? "checked" : ""}><span class='slider'></span></label>`
-			},
+			// Disabled This feature since beta server is down
+			// betaServer: {
+			// 	name: "Beta Server",
+			// 	pre: "<div class='setHed customUtility'>Network</div>",
+			// 	val: false,
+			// 	html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("betaServer", this.checked)' ${this.settings.betaServer.val ? "checked" : ""}><span class='slider'></span></label>`
+			// },
 			dumpResources: {
 				name: "Dump Resources",
 				val: false,

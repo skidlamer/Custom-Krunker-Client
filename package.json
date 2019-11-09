@@ -4,6 +4,7 @@
   "description": "Desktop Client For Krunker",
   "author": "Yendis Entertainment Pty Ltd",
   "main": "app/main.js",
+  "repository": "github:Mixaz017/Custom-Krunker-Client",
   "dependencies": {
     "discord-rpc": "^3.1.0",
     "electron-localshortcut": "^3.1.0",
@@ -13,5 +14,11 @@
     "rimraf": "^3.0.0",
     "v8-compile-cache": "^2.1.0",
     "yargs": "^14.2.0"
+  },
+  "devDependencies": {
+    "electron": "^7.1.1"
+  },
+  "scripts": {
+    "start": "electron ."
   }
 }
