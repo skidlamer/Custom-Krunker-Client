@@ -6,13 +6,14 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 
 ## Current Features / What you can do
 - Every single features from official client is available
+- Slight performance improvements
 - Add ability to change auto updater behavior from configs or `--update=<download|check|skip>` argument ( argument method overrides config )
 - Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
 - Adds compatibility with custom fonts to few social and market pages ( optional )
 - Adds keyboard shortcut for toggle DevTools
 - Adds a button that opens `appData` directory
 - Adds a button that relaunch the client
-- Adds transparency/opacity settings to some elements ( Crosshair, Nametag, etc. / optional )
+- Adds transparency/opacity settings to some elements ( Crosshair, Nametag, Scope, etc. / optional )
 - Ability to disable Resource Swapper ( optional )
 - Ability to disable Discord RPC ( optional )
 - Ability to dump network resources ( useful for making mods and customizations / may recude performance / optional / disable Resource Swapper if you want to dump all files since it prevents dumper from duming some files )
