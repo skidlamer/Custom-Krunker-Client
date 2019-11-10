@@ -10,7 +10,7 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 - Add ability to change auto updater behavior from configs or `--update=<download|check|skip>` argument ( argument method overrides config )
 - Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
 - Adds compatibility with custom fonts to few social and market pages ( optional )
-- Adds keyboard shortcut for toggle DevTools
+- Adds keyboard shortcut for toggle DevTools ( Alt + Command + I for Mac, Ctrl + Shift + I for other platforms)
 - Adds a button that opens `appData` directory
 - Adds a button that relaunch the client
 - Adds transparency/opacity settings to some elements ( Crosshair, Nametag, Scope, etc. / optional )
