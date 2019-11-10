@@ -20,6 +20,7 @@
 	},
 	"scripts": {
 		"start": "electron .",
+		"debug": "electron . --dev",
 		"pack": "electron-builder --dir",
 		"dist": "electron-builder",
 		"postinstall": "electron-builder install-app-deps",
