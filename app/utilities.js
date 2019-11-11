@@ -55,29 +55,18 @@ class Utilities {
 				val: true,
 				html: () => generateHTML("checkbox", "customFontsCSSFix", this)
 			},
-			hideAds: {
-				name: "Hide Ads",
-				pre: "<div class='setHed customUtility'>Interface Tweak</div>",
-				val: true,
-				html: () => generateHTML("checkbox", "hideAds", this),
-				set: () => {
-					if (this.settings.hideAds.val) document.head.appendChild(this.consts.css.hideAds)
-					else {
-						if (this.consts.css.hideAds.parentElement) this.consts.css.hideAds.remove()
-					}
-				}
-			},
 			scopeOffsetX: {
 				name: "Scope X Offset",
+				pre: "<div class='setHed customUtility'>Interface Tweak</div>",
 				val: "0%",
 				html: () => generateHTML("text", "scopeOffsetX", this, "Scope X Offset CSS Value"),
-				set: () => document.getElementById("aimRecticle").style.transform = `translate(${this.settings.scopeOffsetX.val}, ${this.settings.scopeOffsetY.val})`
+				set: value => document.getElementById("aimRecticle").style.transform = `translate(${value}, ${this.settings.scopeOffsetY.val})`
 			},
 			scopeOffsetY: {
 				name: "Scope Y Offset",
 				val: "0%",
 				html: () => generateHTML("text", "scopeOffsetY", this, "Scope Y Offset CSS Value"),
-				set: () => document.getElementById("aimRecticle").style.transform = `translate(${this.settings.scopeOffsetX.val}, ${this.settings.scopeOffsetY.val})`
+				set: value => document.getElementById("aimRecticle").style.transform = `translate(${this.settings.scopeOffsetX.val}, ${value})`
 			},
 			scopeOpacity: {
 				name: "Scope Opacity",
@@ -86,19 +75,19 @@ class Utilities {
 				max: 1,
 				step: 0.01,
 				html: () => generateHTML("slider", "scopeOpacity", this),
-				set: () => document.getElementById("recticleImg").style.opacity = this.settings.scopeOpacity.val
+				set: value => document.getElementById("recticleImg").style.opacity = value
 			},
 			gameOverlayOffsetX: {
 				name: "Game Overlay X Offset",
 				val: "0%",
 				html: () => generateHTML("text", "gameOverlayOffsetX", this, "Game Overlay X Offset CSS Value"),
-				set: () => document.getElementById("overlay").style.transform = `translate(${this.settings.gameOverlayOffsetX.val}, ${this.settings.gameOverlayOffsetY.val})`
+				set: value => document.getElementById("overlay").style.transform = `translate(${value}, ${this.settings.gameOverlayOffsetY.val})`
 			},
 			gameOverlayOffsetY: {
 				name: "Game Overlay Y Offset",
 				val: "0%",
 				html: () => generateHTML("text", "gameOverlayOffsetY", this, "Game Overlay Y Offset CSS Value"),
-				set: () => document.getElementById("overlay").style.transform = `translate(${this.settings.gameOverlayOffsetX.val}, ${this.settings.gameOverlayOffsetY.val})`
+				set: value => document.getElementById("overlay").style.transform = `translate(${this.settings.gameOverlayOffsetX.val}, ${value})`
 			},
 			gameOverlayOpacity: {
 				name: "Game Overlay Opacity",
@@ -107,7 +96,7 @@ class Utilities {
 				max: 1,
 				step: 0.01,
 				html: () => generateHTML("slider", "gameOverlayOpacity", this),
-				set: () => document.getElementById("overlay").style.opacity = this.settings.gameOverlayOpacity.val
+				set: value => document.getElementById("overlay").style.opacity = value
 			},
 			overlayOpacity: {
 				name: "Crosshair, Nametag, etc. Opacity",
@@ -116,7 +105,43 @@ class Utilities {
 				max: 1,
 				step: 0.01,
 				html: () => generateHTML("slider", "overlayOpacity", this),
-				set: () => document.getElementById("game-overlay").style.opacity = this.settings.overlayOpacity.val
+				set: value => document.getElementById("game-overlay").style.opacity = value
+			},
+			hideAds: {
+				name: "Hide Ads",
+				val: true,
+				html: () => generateHTML("checkbox", "hideAds", this),
+				set: (value, init) => {
+					if (value) document.head.appendChild(this.consts.css.hideAds)
+					else if (!init) this.consts.css.hideAds.remove()
+				}
+			},
+			hideClaim: {
+				name: "Hide Free KR",
+				val: false,
+				html: () => generateHTML("checkbox", "hideClaim", this),
+				set: value => document.getElementById("claimHolder").style.display = value ? "none" : "unset"
+			},
+			hideMerch: {
+				name: "Hide Merch",
+				val: false,
+				html: () => generateHTML("checkbox", "hideMerch", this),
+				set: value => document.getElementById("merchHolder").style.display = value ? "none" : "unset"
+			},
+			hideSocials: {
+				name: "Hide Social Buttons",
+				val: false,
+				html: () => generateHTML("checkbox", "hideSocials", this),
+				set: (value, init) => {
+					if (value) document.head.appendChild(this.consts.css.hideSocials)
+					else if (!init) this.consts.css.hideSocials.remove()
+				}
+			},
+			hideStreams: {
+				name: "Hide Streams",
+				val: false,
+				html: () => generateHTML("checkbox", "hideStreams", this),
+				set: value => document.getElementById("streamContainer").style.display = value ? "none" : "unset"
 			},
 			customSplashBackground: {
 				name: "Custom Splash Background",

@@ -76,5 +76,8 @@ module.exports.css = {
 	}`,
 	hideAds: `#aHolder, #pre-content-container {
 		display: none !important
+	}`,
+	hideSocials: `.headerBarRight > .verticalSeparator, .imageButton {
+		display: none
 	}`
 }
