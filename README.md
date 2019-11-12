@@ -34,7 +34,6 @@ If you're Mac or Linux user, get [electron-builder](https://www.electron.build/)
 #### Notes
 - Options that added by the custom client is highlighted in orange
 - Some of options has to restart the client or reload the page to apply
-- **Use this client at your own risk!** ( At least this client is safer than other dirty clients like [MTZ](https://discord.gg/tVF55ws) )
 
 ##### Gone Features
 - Connects to the beta servers ( `beta.krunker.io` is not hosted anymore )
