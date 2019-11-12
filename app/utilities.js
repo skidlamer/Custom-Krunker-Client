@@ -98,6 +98,27 @@ class Utilities {
 				html: () => generateHTML("slider", "gameOverlayOpacity", this),
 				set: value => document.getElementById("overlay").style.opacity = value
 			},
+			damageOverlayOffsetX: {
+				name: "Damage Overlay X Offset",
+				val: "0%",
+				html: () => generateHTML("text", "damageOverlayOffsetX", this, "Damage Overlay X Offset CSS Value"),
+				set: value => document.getElementById("bloodDisplay").style.transform = `translate(${value}, ${this.settings.damageOverlayOffsetY.val})`
+			},
+			damageOverlayOffsetY: {
+				name: "Damage Overlay Y Offset",
+				val: "0%",
+				html: () => generateHTML("text", "damageOverlayOffsetY", this, "Damage Overlay Y Offset CSS Value"),
+				set: value => document.getElementById("bloodDisplay").style.transform = `translate(${this.settings.damageOverlayOffsetY.val}, ${value})`
+			},
+			scorePopupOpacity: {
+				name: "Score Popup Opacity",
+				val: 1,
+				min: 0,
+				max: 1,
+				step: 0.01,
+				html: () => generateHTML("slider", "scorePopupOpacity", this),
+				set: value => document.getElementById("chalDisplay").style.opacity = value
+			},
 			overlayOpacity: {
 				name: "Crosshair, Nametag, etc. Opacity",
 				val: 1,

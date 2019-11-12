@@ -1,6 +1,6 @@
 {
 	"name": "io.custom.krunker.desktop",
-	"version": "1.7.8-custom.1",
+	"version": "1.7.8-custom.2",
 	"description": "Customized Desktop Client For Krunker",
 	"author": "Mixaz",
 	"main": "app/main.js",
@@ -37,6 +37,27 @@
 						"x64",
 						"ia32"
 					]
+				},
+				{
+					"target": "portable",
+					"arch": [
+						"x64",
+						"ia32"
+					]
+				}
+			]
+		},
+		"mac": {
+			"target": [
+				{
+					"target": "dmg"
+				}
+			]
+		},
+		"linux": {
+			"target": [
+				{
+					"target": "appImage"
 				}
 			]
 		},
@@ -58,7 +79,7 @@
 			"!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
 			"!**/{appveyor.yml,.travis.yml,circle.yml}",
 			"!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
-			"!{.tools,*.env,README.md}"
+			"!*.env"
 		]
 	}
 }
