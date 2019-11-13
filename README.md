@@ -37,16 +37,16 @@ If you're a Windows user, download a installer from [latest release](https://git
 
 Unfortunately I can't build Mac and Linux versions because I'm using Windows. However you can still use this client by following this guide:
 - Requirements for both methods
-	1. Install [Node.js](https://nodejs.org/en/download/).
+	1. Install [Node.js](https://nodejs.org/en/download/). Versions above 9.0.0 should works fine.
 	2. [Download ZIP](https://github.com/Mixaz017/Custom-Krunker-Client/archive/master.zip) and extract, or clone this repository. We call the extracted directory or the cloned repository "local repository".
 	3. Open CLI ( Terminal ) from local repository and run `npm i`. This command should install all dependenciy modules.
 - Build method ( recommended )  
 	_This method will build a installer and lets you install the client._
-	1. Open CLI and run `npm i electron-builder -g`. This command should install `electron-builder` module globaly.
+	1. Open CLI and run `npm i electron-builder -g`. This command should install `electron-builder` module globally.
 	2. Run `electron-builder -c.win="" -c.mac="" -c.linux=""`. The installer will be created in `dist` directory.
 	3. Install the client.
 - No build method  
 	_This method simply launches the client directly, without building. You have to do this method every time you want to launch the client._
-	1. Open CLI and run `npx electron .`. This command should launch the client.
+	1. Open CLI and run `npm start`. This command should launch the client.
 ##### Gone Features
 - Connects to the beta servers ( since `beta.krunker.io` is not hosted anymore )
