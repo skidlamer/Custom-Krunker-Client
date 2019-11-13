@@ -33,11 +33,9 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 - Makes splash screen background and font customizable
 - Few minor tweaks for debugging
 
-#### Notes
-
-##### How to Install or Build
+#### How to Install or Build
 If you're a Windows user, download a installer from [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest). You don't have to download `.blockmap` or `latest.yml`, because those files are released only for auto update purpose.  
 If you're Mac or Linux user, get [electron-builder](https://www.electron.build/) (or other builder/packager), clone or ZIP download this repository, and build/package it for yourself. I can't build Mac and Linux versions from a Windows PC.
 
-###### Gone Features
+##### Gone Features
 - Connects to the beta servers ( since `beta.krunker.io` is not hosted anymore )
