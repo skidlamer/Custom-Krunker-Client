@@ -25,7 +25,6 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 - Ability to dump network resources ( useful for making mods and customizations / may recude performance / optional / disable Resource Swapper if you want to dump all files since it prevents dumper from duming some files )
 - Always enable debug mode ( optional )
 - Better "Clear Cache" button ( fixed a bug & works faster )
-
 - Customizable Game Overlay offsets
 - Fixes splash screen font size
 - Patches resource swapper to work with beta server
@@ -34,8 +33,20 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 - Few minor tweaks for debugging
 
 #### How to Install or Build
-If you're a Windows user, download a installer from [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest). You don't have to download `.blockmap` or `latest.yml`, because those files are released only for auto update purpose.  
-If you're Mac or Linux user, get [electron-builder](https://www.electron.build/) (or other builder/packager), clone or ZIP download this repository, and build/package it for yourself. I can't build Mac and Linux versions from a Windows PC.
+If you're a Windows user, download a installer from [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest). You have to just download an `exe` file. You don't have to download `.blockmap` or `latest.yml`, because those files are released only for auto update purpose.
 
+Unfortunately I can't build Mac and Linux versions because I'm using Windows. However you can still use this client by following this guide:
+- Requirements for both methods
+	1. Install [Node.js](https://nodejs.org/en/download/).
+	2. [Download ZIP](https://github.com/Mixaz017/Custom-Krunker-Client/archive/master.zip) and extract, or clone this repository. We call the extracted directory or the cloned repository "local repository".
+	3. Open CLI ( Terminal ) from local repository and run `npm i`. This command should install all dependenciy modules.
+- Build method ( recommended )  
+	_This method will build a installer and lets you install the client._
+	1. Open CLI and run `npm i electron-builder -g`. This command should install `electron-builder` module globaly.
+	2. Run `electron-builder -c.win="" -c.mac="" -c.linux=""`. The installer will be created in `dist` directory.
+	3. Install the client.
+- No build method  
+	_This method simply launches the client directly, without building. You have to do this method every time you want to launch the client._
+	1. Open CLI and run `npx electron .`. This command should launch the client.
 ##### Gone Features
 - Connects to the beta servers ( since `beta.krunker.io` is not hosted anymore )
