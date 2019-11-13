@@ -51,14 +51,22 @@
 		"mac": {
 			"target": [
 				{
-					"target": "dmg"
+					"target": "dmg",
+					"arch": [
+						"x64",
+						"ia32"
+					]
 				}
 			]
 		},
 		"linux": {
 			"target": [
 				{
-					"target": "appImage"
+					"target": "appImage",
+					"arch": [
+						"x64",
+						"ia32"
+					]
 				}
 			],
 			"category": "game"
