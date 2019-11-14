@@ -35,9 +35,15 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 - Few minor tweaks for debugging
 
 #### How to Install or Build
-If you're a Windows user, download a installer from [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest). You have to just download an `exe` file. You don't have to download `.blockmap` or `latest.yml`, because those files are released only for auto update purpose.
+If you're a Windows user, download a installer from [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest).
+- `Custom-Krunker-Client-<version>-i386.AppImage` - Linux 32-bit installer
+- `Custom-Krunker-Client-<version>.AppImage` - Linux 64-bit installer
+- `Custom-Krunker-Client-<version>.exe` - Windows 32 & 64-bit portable executable
+- `Custom-Krunker-Client-Setup-<version>.exe` - Windows 32 & 64-bit installer ( recommended )
 
-Unfortunately I can't build Mac and Linux versions because I'm using Windows. However you can still use this client by following this guide:
+You don't have to download `.blockmap` or `.yml` files, because those files are released only for auto update purpose.
+
+If your system doesn't support those files, you can still get the client by following the guide below: 
 - Requirements for both methods
 	1. Install [Node.js](https://nodejs.org/en/download/). Versions above 9.0.0 should works fine. If you using `apt` to install Node.js, please note that apt may not work because apt provides very old version of Node.js. You can use [nvm](https://github.com/nvm-sh/nvm) to easily manage Node.js versions so it is highly recommended.
 	2. [Download ZIP](https://github.com/Mixaz017/Custom-Krunker-Client/archive/master.zip) and extract, or clone this repository. We call the extracted directory or the cloned repository "local repository".
