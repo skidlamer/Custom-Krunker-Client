@@ -11,7 +11,7 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 - Some of options has to restart the client or reload the page to apply.
 
 ### Current Features / What You Can Do
-- Every single features from official client is available
+- Every single features from official client is available ( Resource Swapper, Unlimited FPS, etc. )
 - Slight performance improvements
 - Add ability to change auto updater behavior from configs or `--update=<download|check|skip>` argument ( argument method overrides config )
 - Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
@@ -19,17 +19,19 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 - Adds keyboard shortcut for toggle DevTools ( Alt + Command + I for Mac, Ctrl + Shift + I for other platforms)
 - Adds a button that opens `appData` directory
 - Adds a button that relaunch the client
-- Adds transparency/opacity settings to some elements ( Crosshair, Nametag, Scope, etc. / optional )
 - Ability to disable Resource Swapper ( optional )
 - Ability to disable Discord RPC ( optional )
 - Ability to dump network resources ( useful for making mods and customizations / may recude performance / optional / disable Resource Swapper if you want to dump all files since it prevents dumper from duming some files )
 - Always enable debug mode ( optional )
 - Better "Clear Cache" button ( fixed a bug & works faster )
-- Customizable Game Overlay offsets
+- Customizable offsets for various elements ( game overlay, scope, etc. )
+- Customizable opacity for various elements ( crosshair, nametag, scope, etc. )
+- Customizable health display type ( both ( default ), bar only, value only, none)
 - Fixes splash screen font size
 - Patches resource swapper to work with beta server
 - Hide ads ( not actually blocking traffic for Free KR compatibility / optional )
 - Makes splash screen background and font customizable
+- Remembers server search ( optional )
 - Few minor tweaks for debugging
 
 #### How to Install or Build
@@ -37,7 +39,7 @@ If you're a Windows user, download a installer from [latest release](https://git
 
 Unfortunately I can't build Mac and Linux versions because I'm using Windows. However you can still use this client by following this guide:
 - Requirements for both methods
-	1. Install [Node.js](https://nodejs.org/en/download/). Versions above 9.0.0 should works fine.
+	1. Install [Node.js](https://nodejs.org/en/download/). Versions above 9.0.0 should works fine. If you using `apt` to install Node.js, please note that apt may not work because apt provides very old version of Node.js. You can use [nvm](https://github.com/nvm-sh/nvm) to easily manage Node.js versions so it is highly recommended.
 	2. [Download ZIP](https://github.com/Mixaz017/Custom-Krunker-Client/archive/master.zip) and extract, or clone this repository. We call the extracted directory or the cloned repository "local repository".
 	3. Open CLI ( Terminal ) from local repository and run `npm i`. This command should install all dependenciy modules.
 - Build method ( recommended )  

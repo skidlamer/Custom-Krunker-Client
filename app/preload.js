@@ -160,8 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			color: #ff8547
 		}`
 		document.head.appendChild(customUtilityCSS)
-	}
-	if (location.href.isSocial()) {
+	} else if (location.href.isSocial()) {
 		// CSS used in utilities
 		let newUtilityCSS = document.createElement("style")
 		newUtilityCSS.innerHTML = `${config.get("utilities_customFontsCSSFix", true) ? consts.css.customFontsFix : ""}

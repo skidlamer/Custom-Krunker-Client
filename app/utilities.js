@@ -55,18 +55,43 @@ class Utilities {
 				val: true,
 				html: () => generateHTML("checkbox", "customFontsCSSFix", this)
 			},
+			rememberSearch: {
+				name: "Remember Server Search",
+				pre: "<div class='setHed customUtility'>General Tweak</div>",
+				val: false,
+				html: () => generateHTML("checkbox", "rememberSearch", this),
+				resources: {
+					menuObserver: new MutationObserver(() => {
+						if (document.getElementById("serverSearch")) {
+							serverSearch.addEventListener("input", () => localStorage.setItem("moc_serverSearch", serverSearch.value))
+							serverSearch.value = localStorage.getItem("moc_serverSearch")
+							serverSearch.oninput()
+							menuObserver.disconnect()
+						}
+					})
+				},
+				set: value => {
+					if (value) {
+						this.settings.rememberSearch.resources.menuObserver.observe(menuWindow, {
+							childList: true
+						})
+					} else {
+						this.settings.rememberSearch.resources.menuObserver.disconnect()
+					}
+				}
+			},
 			scopeOffsetX: {
 				name: "Scope X Offset",
 				pre: "<div class='setHed customUtility'>Interface Tweak</div>",
 				val: "0%",
 				html: () => generateHTML("text", "scopeOffsetX", this, "Scope X Offset CSS Value"),
-				set: value => document.getElementById("aimRecticle").style.transform = `translate(${value}, ${this.settings.scopeOffsetY.val})`
+				set: value => aimRecticle.style.transform = `translate(${value}, ${this.settings.scopeOffsetY.val})`
 			},
 			scopeOffsetY: {
 				name: "Scope Y Offset",
 				val: "0%",
 				html: () => generateHTML("text", "scopeOffsetY", this, "Scope Y Offset CSS Value"),
-				set: value => document.getElementById("aimRecticle").style.transform = `translate(${this.settings.scopeOffsetX.val}, ${value})`
+				set: value => aimRecticle.style.transform = `translate(${this.settings.scopeOffsetX.val}, ${value})`
 			},
 			scopeOpacity: {
 				name: "Scope Opacity",
@@ -75,19 +100,19 @@ class Utilities {
 				max: 1,
 				step: 0.01,
 				html: () => generateHTML("slider", "scopeOpacity", this),
-				set: value => document.getElementById("recticleImg").style.opacity = value
+				set: value => recticleImg.style.opacity = value
 			},
 			gameOverlayOffsetX: {
 				name: "Game Overlay X Offset",
 				val: "0%",
 				html: () => generateHTML("text", "gameOverlayOffsetX", this, "Game Overlay X Offset CSS Value"),
-				set: value => document.getElementById("overlay").style.transform = `translate(${value}, ${this.settings.gameOverlayOffsetY.val})`
+				set: value => overlay.style.transform = `translate(${value}, ${this.settings.gameOverlayOffsetY.val})`
 			},
 			gameOverlayOffsetY: {
 				name: "Game Overlay Y Offset",
 				val: "0%",
 				html: () => generateHTML("text", "gameOverlayOffsetY", this, "Game Overlay Y Offset CSS Value"),
-				set: value => document.getElementById("overlay").style.transform = `translate(${this.settings.gameOverlayOffsetX.val}, ${value})`
+				set: value => overlay.style.transform = `translate(${this.settings.gameOverlayOffsetX.val}, ${value})`
 			},
 			gameOverlayOpacity: {
 				name: "Game Overlay Opacity",
@@ -96,19 +121,19 @@ class Utilities {
 				max: 1,
 				step: 0.01,
 				html: () => generateHTML("slider", "gameOverlayOpacity", this),
-				set: value => document.getElementById("overlay").style.opacity = value
+				set: value => overlay.style.opacity = value
 			},
 			damageOverlayOffsetX: {
 				name: "Damage Overlay X Offset",
 				val: "0%",
 				html: () => generateHTML("text", "damageOverlayOffsetX", this, "Damage Overlay X Offset CSS Value"),
-				set: value => document.getElementById("bloodDisplay").style.transform = `translate(${value}, ${this.settings.damageOverlayOffsetY.val})`
+				set: value => bloodDisplay.style.transform = `translate(${value}, ${this.settings.damageOverlayOffsetY.val})`
 			},
 			damageOverlayOffsetY: {
 				name: "Damage Overlay Y Offset",
 				val: "0%",
 				html: () => generateHTML("text", "damageOverlayOffsetY", this, "Damage Overlay Y Offset CSS Value"),
-				set: value => document.getElementById("bloodDisplay").style.transform = `translate(${this.settings.damageOverlayOffsetY.val}, ${value})`
+				set: value => bloodDisplay.style.transform = `translate(${this.settings.damageOverlayOffsetY.val}, ${value})`
 			},
 			scorePopupOpacity: {
 				name: "Score Popup Opacity",
@@ -117,7 +142,7 @@ class Utilities {
 				max: 1,
 				step: 0.01,
 				html: () => generateHTML("slider", "scorePopupOpacity", this),
-				set: value => document.getElementById("chalDisplay").style.opacity = value
+				set: value => chalDisplay.style.opacity = value
 			},
 			overlayOpacity: {
 				name: "Crosshair, Nametag, etc. Opacity",
@@ -126,7 +151,30 @@ class Utilities {
 				max: 1,
 				step: 0.01,
 				html: () => generateHTML("slider", "overlayOpacity", this),
-				set: value => document.getElementById("game-overlay").style.opacity = value
+				set: value => window["game-overlay"].style.opacity = value
+			},
+			reloadMessageOpacity: {
+				name: "Reload Message Opacity",
+				val: 1,
+				min: 0,
+				max: 1,
+				step: 0.01,
+				html: () => generateHTML("slider", "reloadMessageOpacity", this),
+				set: value => reloadMsg.style.opacity = value
+			},
+			healthDisplayType: {
+				name: "Health Display Type",
+				val: "both",
+				html: () => generateHTML("select", "healthDisplayType", this, {
+					both: "Both",
+					bar: "Bar",
+					value: "Value",
+					none: "None"
+				}),
+				set: value => {
+					healthValueHolder.style.display = ["both", "value"].includes(value) ? "inherit" : "none"
+					healthBar.style.display = ["both", "bar"].includes(value) ? "inherit" : "none"
+				}
 			},
 			hideAds: {
 				name: "Hide Ads",
@@ -141,13 +189,13 @@ class Utilities {
 				name: "Hide Free KR",
 				val: false,
 				html: () => generateHTML("checkbox", "hideClaim", this),
-				set: value => document.getElementById("claimHolder").style.display = value ? "none" : "unset"
+				set: value => claimHolder.style.display = value ? "none" : "inherit"
 			},
 			hideMerch: {
 				name: "Hide Merch",
 				val: false,
 				html: () => generateHTML("checkbox", "hideMerch", this),
-				set: value => document.getElementById("merchHolder").style.display = value ? "none" : "unset"
+				set: value => merchHolder.style.display = value ? "none" : "inherit"
 			},
 			hideSocials: {
 				name: "Hide Social Buttons",
@@ -162,18 +210,18 @@ class Utilities {
 				name: "Hide Streams",
 				val: false,
 				html: () => generateHTML("checkbox", "hideStreams", this),
-				set: value => document.getElementById("streamContainer").style.display = value ? "none" : "unset"
+				set: value => streamContainer.style.display = value ? "none" : "inherit"
 			},
 			customSplashBackground: {
 				name: "Custom Splash Background",
 				pre: "<div class='setHed customUtility'>Splash Screen</div>",
 				val: "",
-				html: () => `<input type="url" name="url" class="inputGrey2" placeholder="Splash Screen Background Image Path/URL" value="${this.settings.customSplashBackground.val}" oninput="window.utilities.setSetting('customSplashBackground', this.value);">`
+				html: () => generateHTML("url", "customSplashBackground", this, "Splash Screen Background Path/URL")
 			},
 			customSplashFont: {
 				name: "Custom Splash Font",
 				val: "",
-				html: () => `<input type="url" name="url" class="inputGrey2" placeholder="Splash Screen Font Path/URL" value="${this.settings.customSplashFont.val}" oninput="window.utilities.setSetting('customSplashFont', this.value);">`
+				html: () => generateHTML("url", "customSplashFont", this, "Splash Screen Font Path/URL")
 			},
 			autoUpdateType: {
 				name: "Auto Update Type",
@@ -184,12 +232,12 @@ class Utilities {
 			disableResourceSwapper: {
 				name: "Disable Resource Swapper",
 				val: false,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("disableResourceSwapper", this.checked)' ${this.settings.disableResourceSwapper.val ? "checked" : ""}><span class='slider'></span></label>`
+				html: () => generateHTML("checkbox", "disableResourceSwapper", this)
 			},
 			disableDiscordRPC: {
 				name: "Disable Discord RPC",
 				val: false,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("disableDiscordRPC", this.checked)' ${this.settings.disableDiscordRPC.val ? "checked" : ""}><span class='slider'></span></label>`
+				html: () => generateHTML("checkbox", "disableDiscordRPC", this)
 			},
 			// Disabled This feature since beta server is down
 			// betaServer: {
@@ -212,7 +260,7 @@ class Utilities {
 				name: "Debug Mode",
 				pre: "<div class='setHed customUtility'>Debugging</div>",
 				val: false,
-				html: () => `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("debugMode", this.checked)' ${this.settings.debugMode.val ? "checked" : ""}><span class='slider'></span></label>`
+				html: () => generateHTML("checkbox", "debugMode", this)
 			}
 		};
 		const inject = _ => {
