@@ -1,8 +1,7 @@
 # Custom-Krunker-Client
-An Open-Source, Customized Krunker Desktop Client.
-
-Constantly updated.
-We have a [Discord Server](https://discord.gg/XmcW7ny)!
+An Open-Source, Customized Krunker Desktop Client.  
+Constantly updated.  
+We have a [Discord Server](https://discord.gg/XmcW7ny) and providing some supports!
 
 ## How it Works?
 - Adds many features. You can suggest features you want in the Discord.
@@ -12,7 +11,7 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 
 ### Current Features / What You Can Do
 - Every single features from official client is available ( Resource Swapper, Unlimited FPS, etc. )
-- Slight performance improvements
+- May improves load time, and better memory managing 
 ---
 - Patches
 	- Adds compatibility with custom fonts to few social and market pages ( optional )
@@ -20,7 +19,7 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 	- Fixes a bug with Discord RPC
 	- Fixes splash screen font size
 - General Tweaks
-	- Prevents AFK Kick ( optional )
+	- Prevents AFK kick ( optional )
 	- Remembers server search ( optional )
 - Interface Tweaks
 	- Adds a button that reflesh the server browser
