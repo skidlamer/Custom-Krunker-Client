@@ -43,6 +43,9 @@ We have a [Discord Server](https://discord.gg/XmcW7ny) and providing some suppor
 	- Ability to always enable debug mode ( optional )
 	- Few minor tweaks for debugging
 
+### Known Issues
+- Updating the client will remove the pinned icon from taskbar. This also happens with the official client. This is a [known issue](https://github.com/electron-userland/electron-builder/issues/2514) of `electron-builder` and I don't have a fix for it.
+
 #### How to Install or Build
 If you're a Windows user, download a installer from [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest).
 - `Custom-Krunker-Client-<version>-i386.AppImage` - Linux 32-bit installer
@@ -58,13 +61,14 @@ If your system doesn't support those files, you can still get the client by foll
 	2. [Download ZIP](https://github.com/Mixaz017/Custom-Krunker-Client/archive/master.zip) and extract, or clone this repository. We call the extracted directory or the cloned repository "local repository".
 	3. Open CLI ( Terminal ) from local repository and run `npm i`. This command should install all dependenciy modules.
 - Build method ( recommended )  
-	_This method will build a installer and lets you install the client._
+	This method will build a installer and lets you install the client.
 	1. Open CLI and run `npm i electron-builder -g`. This command should install `electron-builder` module globally.
 	2. Run `electron-builder -c.win="" -c.mac="" -c.linux=""`. The installer will be created in `dist` directory.
 	3. Install the client.
 - No build method  
-	_This method simply launches the client directly, without building. You have to do this method every time you want to launch the client._
+	This method simply launches the client directly, without building. You have to do this method every time you want to launch the client.
 	1. Open CLI and run `npm start`. This command should launch the client.
+
 ##### Gone Features
 - Network
 	- Connects to the beta servers ( since `beta.krunker.io` is not hosted anymore )
