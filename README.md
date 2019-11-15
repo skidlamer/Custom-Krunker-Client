@@ -13,26 +13,36 @@ We have a [Discord Server](https://discord.gg/XmcW7ny)!
 ### Current Features / What You Can Do
 - Every single features from official client is available ( Resource Swapper, Unlimited FPS, etc. )
 - Slight performance improvements
-- Add ability to change auto updater behavior from configs or `--update=<download|check|skip>` argument ( argument method overrides config )
-- Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
-- Adds compatibility with custom fonts to few social and market pages ( optional )
-- Adds keyboard shortcut for toggle DevTools ( Alt + Command + I for Mac, Ctrl + Shift + I for other platforms)
-- Adds a button that opens `appData` directory
-- Adds a button that relaunch the client
-- Ability to disable Resource Swapper ( optional )
-- Ability to disable Discord RPC ( optional )
-- Ability to dump network resources ( useful for making mods and customizations / may recude performance / optional / disable Resource Swapper if you want to dump all files since it prevents dumper from duming some files )
-- Always enable debug mode ( optional )
-- Better "Clear Cache" button ( fixed a bug & works faster )
-- Customizable offsets for various elements ( game overlay, scope, etc. )
-- Customizable opacity for various elements ( crosshair, nametag, scope, etc. )
-- Customizable health display type ( both ( default ), bar only, value only, none)
-- Fixes splash screen font size
-- Patches resource swapper to work with beta server
-- Hide ads ( not actually blocking traffic for Free KR compatibility / optional )
-- Makes splash screen background and font customizable
-- Remembers server search ( optional )
-- Few minor tweaks for debugging
+---
+- Patches
+	- Adds compatibility with custom fonts to few social and market pages ( optional )
+	- Fixes "Clear Cache" button ( also works faster )
+	- Fixes a bug with Discord RPC
+	- Fixes splash screen font size
+- General Tweaks
+	- Prevents AFK Kick ( optional )
+	- Remembers server search ( optional )
+- Interface Tweaks
+	- Adds a button that reflesh the server browser
+	- Ability to hide various elements ( ads ( you can still claim Free KR ), merch, etc. )
+	- Customizable health display type
+	- Customizable offsets for various elements ( scope, game overlay, etc. )
+	- Customizable opacity for various elements ( scope, crosshair, etc. )
+- Splash Screen
+	- Customizable background and fonts for splash screen
+- Client Tweaks
+	- Ability to change auto updater behavior from settings or `--update=<download|check|skip>` argument ( argument method temporary overrides config )
+	- Ability to disable Discord RPC ( optional )
+	- Ability to disable Resource Swapper ( optional )
+	- Adds a button that opens `appData` directory
+	- Adds a button that relaunch the client
+	- Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
+- Network
+	- Ability to dump network resources ( useful for making mods and customizations / may reduce performance / optional / disable Resource Swapper if you want to dump all files since it prevents dumper from duming some files )
+- Debugging
+	- Adds keyboard shortcut for toggle DevTools ( Alt + Command + I for Mac, Ctrl + Shift + I for other platforms)
+	- Ability to always enable debug mode ( optional )
+	- Few minor tweaks for debugging
 
 #### How to Install or Build
 If you're a Windows user, download a installer from [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest).
@@ -57,4 +67,7 @@ If your system doesn't support those files, you can still get the client by foll
 	_This method simply launches the client directly, without building. You have to do this method every time you want to launch the client._
 	1. Open CLI and run `npm start`. This command should launch the client.
 ##### Gone Features
-- Connects to the beta servers ( since `beta.krunker.io` is not hosted anymore )
+- Network
+	- Connects to the beta servers ( since `beta.krunker.io` is not hosted anymore )
+- Client Tweaks
+	- Patches resource swapper to work with beta server

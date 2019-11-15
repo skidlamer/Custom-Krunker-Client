@@ -1,13 +1,13 @@
 const os = require('os');
-const fs = require('fs');
+// const fs = require('fs');
 const path = require('path');
-const url = require('url');
+// const url = require('url');
 const yargs = require("yargs")
 
 module.exports.DEBUG = process.argv.includes('--dev') || false;
 module.exports.AUTO_UPDATE_TYPE = yargs.argv.update || null
 
-module.exports.isAMDCPU = (os.cpus()[0].model.indexOf("AMD") > -1);
+module.exports.isAMDCPU = os.cpus().findIndex(cpu => cpu.model.includes("AMD")) != -1;
 
 module.exports.windowResize = {
 	social: 0.8,

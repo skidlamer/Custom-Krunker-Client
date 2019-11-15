@@ -3,12 +3,9 @@ const { BrowserWindow, app, shell, Menu, ipcMain, net } = require('electron');
 const shortcut = require('electron-localshortcut');
 const consts = require('./constants.js');
 const url = require('url');
-const { autoUpdater } = require('electron-updater');
 const Store = require('electron-store');
 const config = new Store();
-const log = require('electron-log');
 const fs = require('fs');
-const DiscordRPC = require('discord-rpc');
 const path = require("path")
 
 let rpc = null;
@@ -21,20 +18,12 @@ let gameWindow = null,
 	current = 0;
 
 const autoUpdateType = (/^(download|check|skip)$/.exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
-consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode")	
+consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false)	
 
 const initLogging = () => {
-	log.debug("-------------------- Client Start --------------------");
+	console.debug("-------------------- Client Start --------------------");
 
-	console.log = log.info;
-	console.info = log.info;
-	console.warn = log.warn;
-	console.error = log.error;
-	console.debug = log.debug;
-
-	process.on('uncaughtException', (error) => {
-		if (error) console.error(error);
-	});
+	process.on('uncaughtException', console.error);
 };
 initLogging();
 
@@ -54,7 +43,6 @@ const initSwitches = () => {
 		app.commandLine.appendSwitch('renderer-process-limit', 100);
 		app.commandLine.appendSwitch('max-active-webgl-contexts', 100);
 	}
-
 };
 initSwitches();
 
@@ -84,45 +72,47 @@ const initAppMenu = () => {
 };
 initAppMenu();
 
-const initDiscordRPC = () => {
-	DiscordRPC.register(consts.DISCORD_ID);
-	rpc = new DiscordRPC.Client({ transport: 'ipc' });
-	rpc.isConnected = false;
-
-	rpc.on('error', console.error);
-
-	if (!config.get("utilities_disableDiscordRPC")) {
+if (!config.get("utilities_disableDiscordRPC", false)) {
+	const initDiscordRPC = () => {
+		const DiscordRPC = require('discord-rpc');
+		DiscordRPC.register(consts.DISCORD_ID);
+		rpc = new DiscordRPC.Client({ transport: 'ipc' });
+		rpc.isConnected = false;
+	
+		rpc.on('error', console.error);
+	
 		rpc.login({ 'clientId': consts.DISCORD_ID })
-		.then(() => {
-			rpc.isConnected = true;
-			rpc.setActivity2 = function(win, obj) {
-				if (current == win) rpc.setActivity(obj);
-			};
-			rpc.on('RPC_MESSAGE_RECEIVED', (event) => {
-				//console.log('RPC_MESSAGE_RECEIVED', event);
-				if (!gameWindow) return;
-				gameWindow.webContents.send('log', ['RPC_MESSAGE_RECEIVED', event]);
-			});
-			rpc.subscribe('ACTIVITY_JOIN', ({ secret }) => {
-				if (!gameWindow) return;
-				let parse = secret.split('|');
-				if (parse[2].isCode()) {
-					gameWindow.loadURL('https://' + parse[0] + '/?game=' + parse[2]);
-				}
-			});
-			rpc.subscribe('ACTIVITY_INVITE', (event) => {
-				if (!gameWindow) return;
-				gameWindow.webContents.send('ACTIVITY_INVITE', event);
-			});
-				rpc.subscribe('ACTIVITY_JOIN_REQUEST', (user) => {
-				if (!gameWindow) return;
-				gameWindow.webContents.send('ACTIVITY_JOIN_REQUEST', user);
-			});
-		})
-		.catch(console.error);
-	}
-};
-initDiscordRPC();
+			.then(() => {
+				rpc.isConnected = true;
+				rpc.setActivity2 = function(win, obj) {
+					if (current == win) rpc.setActivity(obj);
+				};
+				rpc.on('RPC_MESSAGE_RECEIVED', (event) => {
+					//console.log('RPC_MESSAGE_RECEIVED', event);
+					if (!gameWindow) return;
+					gameWindow.webContents.send('log', ['RPC_MESSAGE_RECEIVED', event]);
+				});
+				rpc.subscribe('ACTIVITY_JOIN', ({ secret }) => {
+					if (!gameWindow) return;
+					let parse = secret.split('|');
+					if (parse[2].isCode()) {
+						gameWindow.loadURL('https://' + parse[0] + '/?game=' + parse[2]);
+					}
+				});
+				rpc.subscribe('ACTIVITY_INVITE', (event) => {
+					if (!gameWindow) return;
+					gameWindow.webContents.send('ACTIVITY_INVITE', event);
+				});
+					rpc.subscribe('ACTIVITY_JOIN_REQUEST', (user) => {
+					if (!gameWindow) return;
+					gameWindow.webContents.send('ACTIVITY_JOIN_REQUEST', user);
+				});
+			})
+			.catch(console.error);
+	};
+
+	initDiscordRPC();
+}
 
 const initGameWindow = () => {
 	gameWindow = new BrowserWindow({
@@ -455,6 +445,7 @@ initPromptWindow();
 
 const initUpdater = () => {
 	if (consts.DEBUG || process.platform == 'darwin' || autoUpdateType == "skip") return initGameWindow();
+	const { autoUpdater } = require('electron-updater');
 	let updateCheckFallback = null;
 	autoUpdater.on('checking-for-update', (info) => {
 		splashWindow.webContents.send('checking-for-update');
@@ -553,7 +544,7 @@ app.on('activate', () => {
 	if (gameWindow === null && (splashWindow === null || splashWindow.isDestroyed())) initSplashWindow();
 });
 app.once('before-quit', () => {
-	rpc.destroy().catch(console.error);
+	if (rpc.destroy) rpc.destroy().catch(console.error);
 	shortcut.unregisterAll();
 	gameWindow.close();
 });

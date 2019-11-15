@@ -3,20 +3,13 @@ const gameWindow = remote.getCurrentWindow();
 const consts = require('./constants.js');
 const Store = require('electron-store');
 const config = new Store();
-const log = require('electron-log');
 const Utilities = require('./utilities.js');
 
-const initLogging = () => {
-	console.log = log.info;
-	console.info = log.info;
-	console.warn = log.warn;
-	console.error = log.error;
-	console.debug = log.debug;
-};
-initLogging();
-
 const initIPC = () => {
-	window.prompt = (text) => ipcRenderer.sendSync('prompt', { type: 'text', data: text });
+	window.prompt = (text) => ipcRenderer.sendSync('prompt', {
+		type: 'text',
+		data: text
+	});
 
 	ipcRenderer.on('esc', () => {
 		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
@@ -32,11 +25,12 @@ const initIPC = () => {
 };
 initIPC();
 
-const RichPresence = window.rp = {
+const isDiscordRPCEnabled = !config.get("utilities_disableDiscordRPC")
+
+const RichPresence = window.rp = isDiscordRPCEnabled ? {
 
 	init() {
 		this.gameInfo = null;
-
 		this.getGameInfo();
 		setInterval(() => {
 			RichPresence.update();
@@ -47,8 +41,7 @@ const RichPresence = window.rp = {
 			}, 25000);
 		}
 	},
-
-	getGameInfo() {
+		getGameInfo() {
 		if (!(this.info && this.info.id) || this.isIdle() || !gameWindow.rpc.isConnected) return;
 		fetch('https://matchmaker.krunker.io/game-info?game=' + this.info.id)
 			.then(res => res.json())
@@ -57,24 +50,20 @@ const RichPresence = window.rp = {
 			})
 			.catch(console.warn);
 	},
-
-	getPlayers() {
-		return this.gameInfo ? ' - (' + this.gameInfo.clients + ' of ' + this.gameInfo.maxClients + ')' : '';
+		getPlayers() {
+		return this.gameInfo.clients ? ' - (' + this.gameInfo.clients + ' of ' + this.gameInfo.maxClients + ')' : '';
 	},
-
-	isIdle() {
+		isIdle() {
 		return instructionHolder.innerText.includes('Try seeking a new game');
 	},
-
-	update() {
+		update() {
 		if (!gameWindow.rpc.isConnected) return;
 		if (location.href.isEditor()) return this.sendEditor();
 		if (location.href.isViewer()) return this.sendOther(3, 'browsing viewer');
 		if (location.href.isSocial()) return this.sendOther(2, 'browsing social');
 		if (location.href.isGame()) return this.isIdle() ? this.sendOther(0, 'idle') : this.sendGame();
 	},
-
-	sendEditor() {
+		sendEditor() {
 		let mapN = document.querySelectorAll('div[class="c"]')[0].firstElementChild.value;
 		let activity = {
 			largeImageKey: 'icon',
@@ -84,8 +73,7 @@ const RichPresence = window.rp = {
 		};
 		gameWindow.rpc.setActivity2(1, activity);
 	},
-
-	sendGame() {
+		sendGame() {
 		this.info = window.getGameActivity();
 		if (!this.info || !this.info.mode) return this.sendOther(0, 'in the menu');
 		let activity = {
@@ -98,30 +86,25 @@ const RichPresence = window.rp = {
 			activity.partyId = this.info.id;
 			activity.joinSecret = location.hostname + '|join|' + this.info.id;
 		}
-
-		if (this.info.class.index) {
+			if (this.info.class.index) {
 			activity.smallImageKey = 'icon_' + this.info.class.index;
 			activity.smallImageText = this.info.class.name;
 		}
-
-		activity.details = (this.info.custom ? 'Custom Match' : 'Public Match') + this.getPlayers();
+			activity.details = (this.info.custom ? 'Custom Match' : 'Public Match') + this.getPlayers();
 		activity.state = this.info.mode + " on " + this.info.map;
 		gameWindow.rpc.setActivity2(0, activity);
 	},
-
-	sendOther(win, txt) {
+		sendOther(win, txt) {
 		gameWindow.rpc.setActivity2(win, {
 			details: txt,
 			largeImageKey: 'icon',
 			instance: false
 		});
 	},
-
-	sendIgnore(user) {
+		sendIgnore(user) {
 		gameWindow.rpc.closeJoinRequest(user);
 	},
-
-	sendAccept(user, type, session, channel, message) {
+		sendAccept(user, type, session, channel, message) {
 		if (type != undefined) {
 			gameWindow.rpc.request('ACCEPT_ACTIVITY_INVITE', {
 				"user_id": user,
@@ -136,30 +119,37 @@ const RichPresence = window.rp = {
 	insertNotification(user, type, session, channel, message) {
 		if (this.gameInfo && this.gameInfo.clients == this.gameInfo.maxClients && type != undefined) return this.sendIgnore(user);
 		for (chatList.innerHTML += `<div class='chatItem'>${user.username} ${type == undefined ? 'wants to join':'invited you'} <span class='chatMsg'>
-            <input onclick='window.rp.sendAccept(${user.id}, ${type}, ${session}, ${channel}, ${message}); this.parentNode.innerHTML = "Accepted";' type='button' value='Accept' style='color: #9eeb56; border: none; background-color: #ffffff22; border-radius: 3px'>
-            <input onclick='window.rp.sendIgnore(${user.id}); this.parentNode.innerHTML = "Declined";' type='button' value='Decline' style='color: #eb5656; border: none; background-color: #ffffff22; border-radius: 3px'></span></div><br/>`; chatList.scrollHeight >= 250;) chatList.removeChild(chatList.childNodes[0])
+        <input onclick='window.rp.sendAccept(${user.id}, ${type}, ${session}, ${channel}, ${message}); this.parentNode.innerHTML = "Accepted";' type='button' value='Accept' style='color: #9eeb56; border: none; background-color: #ffffff22; border-radius: 3px'>
+        <input onclick='window.rp.sendIgnore(${user.id}); this.parentNode.innerHTML = "Declined";' type='button' value='Decline' style='color: #eb5656; border: none; background-color: #ffffff22; border-radius: 3px'></span></div><br/>`; chatList.scrollHeight >= 250;) chatList.removeChild(chatList.childNodes[0])
 	}
-};
+} : null;
 
 document.addEventListener("DOMContentLoaded", () => {
-	window.remote = remote
-	window.path = remote.require("path")
-	
-	RichPresence.init();
+	if (isDiscordRPCEnabled) RichPresence.init();
 
 	if (location.href.isGame()) {
 		window.utilities = new Utilities();
-	} else if (location.href.isEditor()) {
-		window.onbeforeunload = null;
-	}
 
-	if (location.href.isGame()) {
 		// Custom CSS for utilities
 		let customUtilityCSS = document.createElement("style")
 		customUtilityCSS.innerHTML = `.customUtility {
 			color: #ff8547
 		}`
 		document.head.appendChild(customUtilityCSS)
+
+		// Server Browser refresh button
+		window.refreshServers = () => {
+			let serverBrowser = windows.find(window => window.hasOwnProperty("serverListData"))
+			serverBrowser.lastLoadTime = 0
+			serverBrowser.loadData()
+		}
+		new MutationObserver(() => {
+			console.log(document.getElementById("serverFilters"), menuWindow.getElementsByClassName("menuLink"))
+			if (document.getElementById("serverFilters")) menuWindow.getElementsByClassName("menuLink")[0].insertAdjacentHTML("afterend", ` | <a class="menuLink" onclick="refreshServers()">Refresh</a>`)
+		}).observe(windowHeader, { childList: true })
+
+	} else if (location.href.isEditor()) {
+		window.onbeforeunload = null;
 	} else if (location.href.isSocial()) {
 		// CSS used in utilities
 		let newUtilityCSS = document.createElement("style")
@@ -167,5 +157,4 @@ document.addEventListener("DOMContentLoaded", () => {
 		${config.get("utilities_hideAds", true) ? consts.css.hideAds : ""}`
 		document.head.appendChild(newUtilityCSS)
 	}
-
 }, false);

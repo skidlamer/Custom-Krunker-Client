@@ -1,9 +1,9 @@
-const { remote, ipcRenderer } = require('electron');
+const { remote } = require('electron');
 const Store = require('electron-store');
 const config = new Store();
 const consts = require('./constants.js');
-const url = require('url');
-const rimraf = require('rimraf');
+// const url = require('url');
+// const rimraf = require('rimraf');
 const fs = require("fs")
 
 // const CACHE_PATH = consts.joinPath(remote.app.getPath('appData'), remote.app.name, "Cache");
@@ -50,14 +50,27 @@ class Utilities {
 				}
 			},
 			customFontsCSSFix: {
-				name: "Custom Fonts CSS Fix",
+				name: "Fix CSS for Custom Fonts",
 				pre: "<div class='setHed customUtility'>Patch</div>",	
 				val: true,
 				html: () => generateHTML("checkbox", "customFontsCSSFix", this)
 			},
+			preventAFK: {
+				name: "Prevent AFK Kick",
+				pre: "<div class='setHed customUtility'>General Tweak</div>",
+				val: false,
+				html: () => generateHTML("checkbox", "preventAFK", this),
+				resources: {
+					cancelIdle: () => idleTimer = -Infinity,
+					intervalId: null
+				},
+				set: (value, init)=> {
+					if (value) this.settings.preventAFK.resources.intervalId = setInterval(this.settings.preventAFK.resources.cancelIdle, 60000)
+					else if (!init) clearInterval(this.settings.preventAFK.resources.intervalId)
+				}
+			},
 			rememberSearch: {
 				name: "Remember Server Search",
-				pre: "<div class='setHed customUtility'>General Tweak</div>",
 				val: false,
 				html: () => generateHTML("checkbox", "rememberSearch", this),
 				resources: {
@@ -248,6 +261,7 @@ class Utilities {
 			// },
 			dumpResources: {
 				name: "Dump Resources",
+				pre: "<div class='setHed customUtility'>Network</div>",
 				val: false,
 				html: () => generateHTML("checkbox", "dumpResources", this)
 			},
@@ -406,6 +420,8 @@ class Utilities {
 		this.createSettings();
 		window.addEventListener("keydown", event => this.keyDown(event));
 
+		window.remote = remote
+		window.path = require("path")
 		window.timeouts = {}
 		window.delayExecuteClient = function (name, object, delay = 600) {
             return clearTimeout(timeouts[name]), timeouts[name] = setTimeout(function () {
