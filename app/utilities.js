@@ -225,6 +225,20 @@ class Utilities {
 				html: () => generateHTML("checkbox", "hideStreams", this),
 				set: value => streamContainer.style.display = value ? "none" : "inherit"
 			},
+			customCSS: {
+				name: "Custom CSS",
+				val: "",
+				html: () => generateHTML("url", "customCSS", this, "CSS File Path/URL"),
+				resources: { css: document.createElement("link") },
+				set: (value, init) => {
+					this.settings.customCSS.resources.css.href = value
+					if (init) {
+						this.settings.customCSS.resources.css.rel = "stylesheet"
+						document.head.appendChild(this.settings.customCSS.resources.css)
+					}
+					
+				}
+			},
 			customSplashBackground: {
 				name: "Custom Splash Background",
 				pre: "<div class='setHed customUtility'>Splash Screen</div>",
@@ -299,15 +313,16 @@ class Utilities {
 				return tmpHTML;
 			};
 		}
-		function generateHTML(type, name, object, extra) {
-            if ('checkbox' == type) return '<label class="switch"><input type="checkbox" onclick="window.utilities.setSetting(\x27' + name + '\x27, this.checked)"\n' + (object.settings[name]['val'] ? 'checked' : '') + '><span class="slider"></span></label>';
-            if ('slider' == type) return '<input type="number" class="sliderVal" id="slid_input_utilities_' + name + '"\nmin="' + object.settings[name]['min'] + '" max="' + object.settings[name]['max'] + '" value="' + object.settings[name]['val'] + '" onkeypress="window.delayExecuteClient(\x27' + name + '\x27, this)" style="border-width:0px"/>\n<div class="slidecontainer">\n<input type="range" id="slid_utilities_' + name + '" min="' + object.settings[name]['min'] + '" max="' + object.settings[name]['max'] + '" step="' + object.settings[name]['step'] + '"\nvalue="' + object.settings[name]['val'] + '" class="sliderM" oninput="window.utilities.setSetting(\x27' + name + '\x27, this.value)"></div>';
-            if ('select' == type) {
-                let temp = '<select onchange="window.utilities.setSetting(\x27' + name + '\x27, this.value)" class="inputGrey2">';
-                for (let option in extra) temp += '<option value="' + option + '" ' + (option == object.settings[name]['val'] ? 'selected' : '') + '>' + extra[option] + '</option>';
-                return temp += '</select>';
-            }
-            return '<input type="' + type + '" name="' + type + '" id="slid_utilities_' + name + '"\n' + ('color' == type ? 'style="float:right;margin-top:5px"' : 'class="inputGrey2" placeholder="' + extra + '"') + '\nvalue="' + object.settings[name]['val'] + '" oninput="window.utilities.setSetting(\x27' + name + '\x27, this.value)"/>';
+		function generateHTML(type, name, object, extra, autoSave = true) {
+			switch (type) {
+				case 'checkbox': return `<label class="switch"><input type="checkbox" ${autoSave ? `onclick="window.utilities.setSetting('${name}', this.checked)"` : ""} ${object.settings[name]['val'] ? 'checked' : ''}><span class="slider"></span></label>`;
+            	case 'slider': return `<input type="number" class="sliderVal" id="slid_input_utilities_${name}"\nmin="${object.settings[name]['min']}" max="${object.settings[name]['max']}" value="${object.settings[name]['val']}" ${autoSave ? `onkeypress="window.delayExecuteClient(\x27${name}\x27, this)"` : ""} style="border-width:0px"/>\n<div class="slidecontainer">\n<input type="range" id="slid_utilities_${name}" min="${object.settings[name]['min']}" max="${object.settings[name]['max']}" step="${object.settings[name]['step']}"\nvalue="${object.settings[name]['val']}" class="sliderM" ${autoSave ? `oninput="window.utilities.setSetting(\x27${name}\x27, this.value)"`: ""}></div>`;
+            	case 'select' :
+                	let temp = `<select ${autoSave ? `onchange="window.utilities.setSetting(\x27${name}\x27, this.value)"` : ""} class="inputGrey2">`;
+                	for (let option in extra) temp += '<option value="' + option + '" ' + (option == object.settings[name]['val'] ? 'selected' : '') + '>' + extra[option] + '</option>';
+					return temp += '</select>';
+				default: return `<input type="${type}" name="${type}" id="slid_utilities_${name}"\n${'color' == type ? 'style="float:right;margin-top:5px"' : `class="inputGrey2" placeholder="${extra}"`}\nvalue="${object.settings[name]['val']}" ${autoSave ? `oninput="window.utilities.setSetting(\x27${name}\x27, this.value)"` : ""}/>`;
+			}
 		}
 		let waitForWindows = setInterval(_ => {
 			if (window.windows) {
@@ -401,15 +416,16 @@ class Utilities {
 		remote.shell.openItem(this.settings.dumpPath.val)
 	}
 
+	generateStyle (text, id) {
+		let newElement = document.createElement("style")
+		newElement.id = id
+		newElement.innerHTML = text
+		return newElement
+	}
+
 	initConsts() {
 		// CSS stuff used by utilities
-		function generateStyle (text) {
-			let newElement = document.createElement("style")
-			newElement.innerHTML = text
-			return newElement
-		}
-
-		Object.entries(consts.css).forEach(entry => consts.css[entry[0]] = generateStyle(entry[1]))
+		Object.entries(consts.css).forEach(entry => consts.css[entry[0]] = this.generateStyle(entry[1]))
 		this.consts.css = consts.css
 	}
 

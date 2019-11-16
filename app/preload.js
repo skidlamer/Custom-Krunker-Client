@@ -51,7 +51,7 @@ const RichPresence = window.rp = isDiscordRPCEnabled ? {
 			.catch(console.warn);
 	},
 		getPlayers() {
-		return this.gameInfo.clients ? ' - (' + this.gameInfo.clients + ' of ' + this.gameInfo.maxClients + ')' : '';
+		return this.gameInfo && this.gameInfo.clients ? ' - (' + this.gameInfo.clients + ' of ' + this.gameInfo.maxClients + ')' : '';
 	},
 		isIdle() {
 		return instructionHolder.innerText.includes('Try seeking a new game');
@@ -144,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			serverBrowser.loadData()
 		}
 		new MutationObserver(() => {
-			console.log(document.getElementById("serverFilters"), menuWindow.getElementsByClassName("menuLink"))
 			if (document.getElementById("serverFilters")) menuWindow.getElementsByClassName("menuLink")[0].insertAdjacentHTML("afterend", ` | <a class="menuLink" onclick="refreshServers()">Refresh</a>`)
 		}).observe(windowHeader, { childList: true })
 
