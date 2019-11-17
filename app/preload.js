@@ -133,7 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		// Custom CSS for utilities
 		let customUtilityCSS = document.createElement("style")
 		customUtilityCSS.innerHTML = `.customUtility {
-			color: #ff8547
+			/* color: #ff8547 */
+			color: #7847ff;
 		}`
 		document.head.appendChild(customUtilityCSS)
 
