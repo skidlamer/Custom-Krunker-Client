@@ -20,7 +20,7 @@ I'm accepting bug reports, suggestions and feedbacks in our Discord.
 - Patches
 	- Adds compatibility with custom fonts to few social and market pages ( optional )
 	- Fixes "Clear Cache" button ( also works faster )
-	- Fixes a bug with rhe Discord RPC
+	- Fixes a bug with the Discord RPC
 	- Fixes splash screen font size
 - General Tweaks
 	- Prevents AFK kick ( optional )
