@@ -65,7 +65,10 @@ class Utilities {
 					intervalId: null
 				},
 				set: (value, init)=> {
-					if (value) this.settings.preventAFK.resources.intervalId = setInterval(this.settings.preventAFK.resources.cancelIdle, 60000)
+					if (value) {
+						this.settings.preventAFK.resources.cancelIdle()
+						this.settings.preventAFK.resources.intervalId = setInterval(this.settings.preventAFK.resources.cancelIdle, 60000)
+					}
 					else if (!init) clearInterval(this.settings.preventAFK.resources.intervalId)
 				}
 			},
@@ -309,6 +312,8 @@ class Utilities {
 				  <a onclick='window.utilities.relaunchClient()' class='menuLink'>Relaunch Client</a>
 				  |
 				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.getName()))' class='menuLink'>Open appData</a>
+				  |
+				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("documents"), "/KrunkerResourceSwapper"))' class='menuLink'>Open Resource Swapper<\a>
 	           `;
 				return tmpHTML;
 			};
