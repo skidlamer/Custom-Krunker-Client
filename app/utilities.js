@@ -5,6 +5,7 @@ const consts = require('./constants.js');
 // const url = require('url');
 // const rimraf = require('rimraf');
 const fs = require("fs")
+const path = require("path")
 
 // const CACHE_PATH = consts.joinPath(remote.app.getPath('appData'), remote.app.name, "Cache");
 
@@ -53,20 +54,29 @@ class Utilities {
 				name: "Fix CSS for Custom Fonts",
 				pre: "<div class='setHed customUtility'>Patch</div>",	
 				val: true,
-				html: () => generateHTML("checkbox", "customFontsCSSFix", this)
+				html: () => generateSetting("checkbox", "customFontsCSSFix", this)
+			},
+			noTextShadows: {
+				name: "Remove Text Shadows",
+				val: false,
+				html: () => generateSetting("checkbox", "noTextShadows", this),
+				set: (value, init) => {
+					if (value) document.head.appendChild(this.consts.css.noTextShadows)
+					else if (!init) this.consts.css.noTextShadows.remove()
+				}
 			},
 			preventAFK: {
 				name: "Prevent AFK Kick",
 				pre: "<div class='setHed customUtility'>General Tweak</div>",
 				val: false,
-				html: () => generateHTML("checkbox", "preventAFK", this),
+				html: () => generateSetting("checkbox", "preventAFK", this),
 				resources: {
 					cancelIdle: () => idleTimer = -Infinity,
 					intervalId: null
 				},
 				set: (value, init)=> {
 					if (value) {
-						this.settings.preventAFK.resources.cancelIdle()
+						if (!init) this.settings.preventAFK.resources.cancelIdle()
 						this.settings.preventAFK.resources.intervalId = setInterval(this.settings.preventAFK.resources.cancelIdle, 60000)
 					}
 					else if (!init) clearInterval(this.settings.preventAFK.resources.intervalId)
@@ -75,7 +85,7 @@ class Utilities {
 			rememberSearch: {
 				name: "Remember Server Search",
 				val: false,
-				html: () => generateHTML("checkbox", "rememberSearch", this),
+				html: () => generateSetting("checkbox", "rememberSearch", this),
 				resources: {
 					menuObserver: new MutationObserver(() => {
 						if (document.getElementById("serverSearch")) {
@@ -100,13 +110,13 @@ class Utilities {
 				name: "Scope X Offset",
 				pre: "<div class='setHed customUtility'>Interface Tweak</div>",
 				val: "0%",
-				html: () => generateHTML("text", "scopeOffsetX", this, "Scope X Offset CSS Value"),
+				html: () => generateSetting("text", "scopeOffsetX", this, "Scope X Offset CSS Value"),
 				set: value => aimRecticle.style.transform = `translate(${value}, ${this.settings.scopeOffsetY.val})`
 			},
 			scopeOffsetY: {
 				name: "Scope Y Offset",
 				val: "0%",
-				html: () => generateHTML("text", "scopeOffsetY", this, "Scope Y Offset CSS Value"),
+				html: () => generateSetting("text", "scopeOffsetY", this, "Scope Y Offset CSS Value"),
 				set: value => aimRecticle.style.transform = `translate(${this.settings.scopeOffsetX.val}, ${value})`
 			},
 			scopeOpacity: {
@@ -115,19 +125,19 @@ class Utilities {
 				min: 0,
 				max: 1,
 				step: 0.01,
-				html: () => generateHTML("slider", "scopeOpacity", this),
+				html: () => generateSetting("slider", "scopeOpacity", this),
 				set: value => recticleImg.style.opacity = value
 			},
 			gameOverlayOffsetX: {
 				name: "Game Overlay X Offset",
 				val: "0%",
-				html: () => generateHTML("text", "gameOverlayOffsetX", this, "Game Overlay X Offset CSS Value"),
+				html: () => generateSetting("text", "gameOverlayOffsetX", this, "Game Overlay X Offset CSS Value"),
 				set: value => overlay.style.transform = `translate(${value}, ${this.settings.gameOverlayOffsetY.val})`
 			},
 			gameOverlayOffsetY: {
 				name: "Game Overlay Y Offset",
 				val: "0%",
-				html: () => generateHTML("text", "gameOverlayOffsetY", this, "Game Overlay Y Offset CSS Value"),
+				html: () => generateSetting("text", "gameOverlayOffsetY", this, "Game Overlay Y Offset CSS Value"),
 				set: value => overlay.style.transform = `translate(${this.settings.gameOverlayOffsetX.val}, ${value})`
 			},
 			gameOverlayOpacity: {
@@ -136,19 +146,19 @@ class Utilities {
 				min: 0,
 				max: 1,
 				step: 0.01,
-				html: () => generateHTML("slider", "gameOverlayOpacity", this),
+				html: () => generateSetting("slider", "gameOverlayOpacity", this),
 				set: value => overlay.style.opacity = value
 			},
 			damageOverlayOffsetX: {
 				name: "Damage Overlay X Offset",
 				val: "0%",
-				html: () => generateHTML("text", "damageOverlayOffsetX", this, "Damage Overlay X Offset CSS Value"),
+				html: () => generateSetting("text", "damageOverlayOffsetX", this, "Damage Overlay X Offset CSS Value"),
 				set: value => bloodDisplay.style.transform = `translate(${value}, ${this.settings.damageOverlayOffsetY.val})`
 			},
 			damageOverlayOffsetY: {
 				name: "Damage Overlay Y Offset",
 				val: "0%",
-				html: () => generateHTML("text", "damageOverlayOffsetY", this, "Damage Overlay Y Offset CSS Value"),
+				html: () => generateSetting("text", "damageOverlayOffsetY", this, "Damage Overlay Y Offset CSS Value"),
 				set: value => bloodDisplay.style.transform = `translate(${this.settings.damageOverlayOffsetY.val}, ${value})`
 			},
 			scorePopupOpacity: {
@@ -157,7 +167,7 @@ class Utilities {
 				min: 0,
 				max: 1,
 				step: 0.01,
-				html: () => generateHTML("slider", "scorePopupOpacity", this),
+				html: () => generateSetting("slider", "scorePopupOpacity", this),
 				set: value => chalDisplay.style.opacity = value
 			},
 			overlayOpacity: {
@@ -166,7 +176,7 @@ class Utilities {
 				min: 0,
 				max: 1,
 				step: 0.01,
-				html: () => generateHTML("slider", "overlayOpacity", this),
+				html: () => generateSetting("slider", "overlayOpacity", this),
 				set: value => window["game-overlay"].style.opacity = value
 			},
 			reloadMessageOpacity: {
@@ -175,13 +185,13 @@ class Utilities {
 				min: 0,
 				max: 1,
 				step: 0.01,
-				html: () => generateHTML("slider", "reloadMessageOpacity", this),
+				html: () => generateSetting("slider", "reloadMessageOpacity", this),
 				set: value => reloadMsg.style.opacity = value
 			},
 			healthDisplayType: {
 				name: "Health Display Type",
 				val: "both",
-				html: () => generateHTML("select", "healthDisplayType", this, {
+				html: () => generateSetting("select", "healthDisplayType", this, {
 					both: "Both",
 					bar: "Bar",
 					value: "Value",
@@ -195,7 +205,7 @@ class Utilities {
 			hideAds: {
 				name: "Hide Ads",
 				val: true,
-				html: () => generateHTML("checkbox", "hideAds", this),
+				html: () => generateSetting("checkbox", "hideAds", this),
 				set: (value, init) => {
 					if (value) document.head.appendChild(this.consts.css.hideAds)
 					else if (!init) this.consts.css.hideAds.remove()
@@ -204,19 +214,19 @@ class Utilities {
 			hideClaim: {
 				name: "Hide Free KR",
 				val: false,
-				html: () => generateHTML("checkbox", "hideClaim", this),
+				html: () => generateSetting("checkbox", "hideClaim", this),
 				set: value => claimHolder.style.display = value ? "none" : "inherit"
 			},
 			hideMerch: {
 				name: "Hide Merch",
 				val: false,
-				html: () => generateHTML("checkbox", "hideMerch", this),
+				html: () => generateSetting("checkbox", "hideMerch", this),
 				set: value => merchHolder.style.display = value ? "none" : "inherit"
 			},
 			hideSocials: {
 				name: "Hide Social Buttons",
 				val: false,
-				html: () => generateHTML("checkbox", "hideSocials", this),
+				html: () => generateSetting("checkbox", "hideSocials", this),
 				set: (value, init) => {
 					if (value) document.head.appendChild(this.consts.css.hideSocials)
 					else if (!init) this.consts.css.hideSocials.remove()
@@ -225,13 +235,13 @@ class Utilities {
 			hideStreams: {
 				name: "Hide Streams",
 				val: false,
-				html: () => generateHTML("checkbox", "hideStreams", this),
+				html: () => generateSetting("checkbox", "hideStreams", this),
 				set: value => streamContainer.style.display = value ? "none" : "inherit"
 			},
 			customCSS: {
 				name: "Custom CSS",
 				val: "",
-				html: () => generateHTML("url", "customCSS", this, "CSS File Path/URL"),
+				html: () => generateSetting("url", "customCSS", this, "CSS File Path/URL"),
 				resources: { css: document.createElement("link") },
 				set: (value, init) => {
 					this.settings.customCSS.resources.css.href = value
@@ -246,28 +256,28 @@ class Utilities {
 				name: "Custom Splash Background",
 				pre: "<div class='setHed customUtility'>Splash Screen</div>",
 				val: "",
-				html: () => generateHTML("url", "customSplashBackground", this, "Splash Screen Background Path/URL")
+				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22customSplashBackground\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.customSplashBackground.val)' class='menuLink'>Open</a></span>" + generateSetting("url", "customSplashBackground", this, "Splash Screen Background Path/URL")
 			},
 			customSplashFont: {
 				name: "Custom Splash Font",
 				val: "",
-				html: () => generateHTML("url", "customSplashFont", this, "Splash Screen Font Path/URL")
+				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22customSplashFont\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.customSplashFont.val' class='menuLink'>Open</a></span>" + generateSetting("url", "customSplashFont", this, "Splash Screen Font Path/URL")
 			},
 			autoUpdateType: {
 				name: "Auto Update Type",
 				pre: "<div class='setHed customUtility'>Client Tweak</div>",
 				val: "download",
-				html: () => generateHTML("select", "autoUpdateType", this, consts.autoUpdateTypes)
+				html: () => generateSetting("select", "autoUpdateType", this, consts.autoUpdateTypes)
 			},
 			disableResourceSwapper: {
 				name: "Disable Resource Swapper",
 				val: false,
-				html: () => generateHTML("checkbox", "disableResourceSwapper", this)
+				html: () => generateSetting("checkbox", "disableResourceSwapper", this)
 			},
 			disableDiscordRPC: {
 				name: "Disable Discord RPC",
 				val: false,
-				html: () => generateHTML("checkbox", "disableDiscordRPC", this)
+				html: () => generateSetting("checkbox", "disableDiscordRPC", this)
 			},
 			// Disabled This feature since beta server is down
 			// betaServer: {
@@ -280,21 +290,21 @@ class Utilities {
 				name: "Dump Resources",
 				pre: "<div class='setHed customUtility'>Network</div>",
 				val: false,
-				html: () => generateHTML("checkbox", "dumpResources", this)
+				html: () => generateSetting("checkbox", "dumpResources", this)
 			},
 			dumpPath: {
 				name: "Dump Path",
 				val: consts.joinPath(remote.app.getPath("documents"), "KrunkerResourceDump"),
-				html: () => "<a onclick='window.utilities.openDumpPath()' class='inputGrey2 menuLink'>Open</a>" + generateHTML("url", "dumpPath", this, "Resource Dump Output Path")
+				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22dumpPath\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.dumpPath.val || path.join(remote.app.getPath(\x22documents\x22), \x22KrunkerResourceDump\x22))' class='menuLink'>Open</a></span>" + generateSetting("url", "dumpPath", this, "Resource Dump Output Path")
 			},
 			debugMode: {
 				name: "Debug Mode",
 				pre: "<div class='setHed customUtility'>Debugging</div>",
 				val: false,
-				html: () => generateHTML("checkbox", "debugMode", this)
+				html: () => generateSetting("checkbox", "debugMode", this)
 			}
 		};
-		const inject = _ => {
+		const inject = () => {
 			window.windows[0].getCSettings = function() { // WILL ONLY WORK FOR 1.8.3+
 				var tmpHTML = "";
 				for (var key in window.utilities.settings) {
@@ -318,7 +328,7 @@ class Utilities {
 				return tmpHTML;
 			};
 		}
-		function generateHTML(type, name, object, extra, autoSave = true) {
+		function generateSetting(type, name, object, extra, autoSave = true) {
 			switch (type) {
 				case 'checkbox': return `<label class="switch"><input type="checkbox" ${autoSave ? `onclick="window.utilities.setSetting('${name}', this.checked)"` : ""} ${object.settings[name]['val'] ? 'checked' : ''}><span class="slider"></span></label>`;
             	case 'slider': return `<input type="number" class="sliderVal" id="slid_input_utilities_${name}"\nmin="${object.settings[name]['min']}" max="${object.settings[name]['max']}" value="${object.settings[name]['val']}" ${autoSave ? `onkeypress="window.delayExecuteClient(\x27${name}\x27, this)"` : ""} style="border-width:0px"/>\n<div class="slidecontainer">\n<input type="range" id="slid_utilities_${name}" min="${object.settings[name]['min']}" max="${object.settings[name]['max']}" step="${object.settings[name]['step']}"\nvalue="${object.settings[name]['val']}" class="sliderM" ${autoSave ? `oninput="window.utilities.setSetting(\x27${name}\x27, this.value)"`: ""}></div>`;
@@ -416,9 +426,9 @@ class Utilities {
 		remote.app.exit(0)
 	}
 
-	openDumpPath() {
-		if (!fs.existsSync(this.settings.dumpPath.val)) fs.mkdirSync(this.settings.dumpPath.val, { recursive: true })
-		remote.shell.openItem(this.settings.dumpPath.val)
+	openItem(fullpath, allowMake = true) {
+		if (allowMake && !fs.existsSync(fullpath)) fs.mkdirSync(fullpath, { recursive: true })
+		remote.shell.showItemInFolder(fullpath)
 	}
 
 	generateStyle (text, id) {

@@ -17,7 +17,7 @@ let gameWindow = null,
 	promptWindow = null,
 	current = 0;
 
-const autoUpdateType = (/^(download|check|skip)$/.exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
+const autoUpdateType = (RegExp(`^(${Object.keys(consts.autoUpdateTypes).join("|")})$`).exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
 consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false)	
 
 const initLogging = () => {
@@ -534,9 +534,9 @@ const initShortcuts = () => {
 };
 
 ['SIGTERM', 'SIGHUP', 'SIGINT', 'SIGBREAK'].forEach((signal) => {
-  process.on(signal, _ => {
-	app.quit()
-  })
+	process.on(signal, () => {
+		app.quit()
+	})
 });
 
 app.once('ready', () => initSplashWindow());

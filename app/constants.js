@@ -74,6 +74,9 @@ module.exports.css = {
 	.scrollItem > div {
 		overflow: auto;
 	}`,
+	noTextShadows: `*, .button.small, .bigShadowT {
+		text-shadow: none !important;
+	}`,
 	hideAds: `#aHolder, #pre-content-container {
 		display: none !important
 	}`,
