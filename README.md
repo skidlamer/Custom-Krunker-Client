@@ -26,7 +26,7 @@ I'm accepting bug reports, suggestions and feedbacks in our Discord.
 	- Prevents AFK kick ( optional )
 	- Remembers server search ( optional )
 - Interface Tweaks
-	- Adds a button that reflesh the server browser
+	- Adds a button that refresh the server browser
 	- Ability to hide various elements ( ads ( you can still claim Free KR ), merch, etc. )
 	- Customizable health display type
 	- Customizable offsets for various elements ( scope, game overlay, etc. )
@@ -69,12 +69,12 @@ If your system doesn't support those released files, you can still run the clien
 - Requirements for both methods
 	1. Install [Node.js](https://nodejs.org/en/download/). Versions above 9.0.0 should works fine. If you using `apt` to install Node.js, please note that apt may not work because apt provides very old version of Node.js. You can use [nvm](https://github.com/nvm-sh/nvm) to easily manage Node.js versions so it is highly recommended.
 	2. [Download ZIP](https://github.com/Mixaz017/Custom-Krunker-Client/archive/master.zip) and extract, or clone this repository. We call the extracted directory or the cloned repository "local repository".
-	3. Open CLI ( Terminal ) from local repository and run `npm i`. This command should install all dependenciy modules.
+	3. Open CLI ( Command Prompt, Terminal, etc. ) from local repository and run `npm i`. This command should install all dependency modules.
 - Build method ( recommended )  
 	This method will build a executable file.
 	1. Open CLI and run `npm i electron-builder -g`. This command should install `electron-builder` module globally.
 	2. Run `electron-builder -c.win="" -c.mac="" -c.linux=""`. The executable file will be created in `dist` directory.
-	3. Run the executable file.
+	3. Run the executable file in `dist` directory.
 - No build method  
 	This method simply launches the client directly, without building. You have to do this method every time you want to launch the client.
 	1. Open CLI and run `npm start`. This command should launch the client.
