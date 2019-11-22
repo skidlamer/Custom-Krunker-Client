@@ -526,6 +526,10 @@ const initShortcuts = () => {
 		toggleDevTools: {
 			key: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
 			press: () => gameWindow.toggleDevTools()
+		},
+		newServer: {
+			key: "F6",
+			press: () => gameWindow.loadURL("https://krunker.io")
 		}
 	}
 	Object.keys(KEY_BINDS).forEach(k => {
