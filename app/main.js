@@ -533,7 +533,7 @@ const initShortcuts = () => {
 		}
 	}
 	Object.keys(KEY_BINDS).forEach(k => {
-		shortcut.register(gameWindow, KEY_BINDS[k].key, () => KEY_BINDS[k].press());
+		shortcut.register(gameWindow, KEY_BINDS[k].key, KEY_BINDS[k].press);
 	});
 };
 
