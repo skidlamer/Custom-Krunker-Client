@@ -19,6 +19,7 @@ let gameWindow = null,
 
 const autoUpdateType = (RegExp(`^(${Object.keys(consts.autoUpdateTypes).join("|")})$`).exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
 consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false)	
+app.userAgentFallback = app.userAgentFallback.replace(/(?<=io).custom(?=.krunker.desktop)|-custom\.\d+/g, "")
 
 const initLogging = () => {
 	console.debug("-------------------- Client Start --------------------");
