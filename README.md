@@ -25,12 +25,15 @@ I'm accepting bug reports, suggestions and feedbacks in our Discord.
 - General Tweaks
 	- Prevents AFK kick ( optional )
 	- Remembers server search ( optional )
+	- Seek for new server by pressing F6 key
 - Interface Tweaks
 	- Adds a button that refresh the server browser
 	- Ability to hide various elements ( ads ( you can still claim Free KR ), merch, etc. )
+	- Ability to use custom CSS file
 	- Customizable health display type
 	- Customizable offsets for various elements ( scope, game overlay, etc. )
 	- Customizable opacity for various elements ( scope, crosshair, etc. )
+	- Remove text shadows ( optional, useful for custom fonts )
 - Splash Screen
 	- Customizable background and fonts for splash screen
 - Client Tweaks

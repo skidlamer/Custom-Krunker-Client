@@ -56,15 +56,6 @@ class Utilities {
 				val: true,
 				html: () => generateSetting("checkbox", "customFontsCSSFix", this)
 			},
-			noTextShadows: {
-				name: "Remove Text Shadows",
-				val: false,
-				html: () => generateSetting("checkbox", "noTextShadows", this),
-				set: (value, init) => {
-					if (value) document.head.appendChild(this.consts.css.noTextShadows)
-					else if (!init) this.consts.css.noTextShadows.remove()
-				}
-			},
 			preventAFK: {
 				name: "Prevent AFK Kick",
 				pre: "<div class='setHed customUtility'>General Tweak</div>",
@@ -237,6 +228,15 @@ class Utilities {
 				val: false,
 				html: () => generateSetting("checkbox", "hideStreams", this),
 				set: value => streamContainer.style.display = value ? "none" : "inherit"
+			},
+			noTextShadows: {
+				name: "Remove Text Shadows",
+				val: false,
+				html: () => generateSetting("checkbox", "noTextShadows", this),
+				set: (value, init) => {
+					if (value) document.head.appendChild(this.consts.css.noTextShadows)
+					else if (!init) this.consts.css.noTextShadows.remove()
+				}
 			},
 			customCSS: {
 				name: "Custom CSS",
