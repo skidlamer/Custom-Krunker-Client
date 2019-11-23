@@ -3,7 +3,7 @@ An Open-Source, Customized Krunker Desktop Client.
 We have a [Discord Server](https://discord.gg/XmcW7ny) and providing some supports!
 
 ## Status
-This client is currently my main project. I purely enjoy working on this project, but this isn't my job.
+I purely enjoy working on this project, but this project is not my job and developments can be unstable.
 As of now, this client is based on the official client, and main focus is to bring bugfixes, tweaks, and more customizability to the client.
 
 I'm accepting bug reports, suggestions and feedbacks in our Discord.

@@ -279,6 +279,37 @@ class Utilities {
 				val: false,
 				html: () => generateSetting("checkbox", "disableDiscordRPC", this)
 			},
+			exportActivity: {
+				name: "Export Game Activity",
+				val: false,
+				html: () => generateSetting("checkbox", "exportActivity", this),
+				resources: {
+					intervalId: null,
+					writeActivity: template =>{
+						let fullpath = config.get("utilities_exportActivityPath", path.join(remote.app.getPath("appData"), remote.app.getName(), "activity.txt"))
+						if (!fs.existsSync(fullpath)) {
+							!fs.existsSync(path.dirname(fullpath)) && fs.mkdirSync(path.dirname(fullpath))
+						}
+						fs.writeFileSync(fullpath, Object.entries(this.flattenObject(window.getGameActivity())).reduce((acc, cur) => acc.replace(new RegExp(`\\\${${cur[0]}}`, "g"), cur[1]), template).replace(/(?<!\\)\\n/g, "\n"))
+					}
+				},
+				set: value => {
+					if (value) this.settings.exportActivity.resources.intervalId = setInterval(() => {
+						this.settings.exportActivity.resources.writeActivity(config.get("utilities_exportActivityString", "${id}"))
+					}, 1000);
+					else clearInterval(this.settings.exportActivity.resources.intervalId)
+				} 
+			},
+			exportActivityPath: {
+				name: "Game Activity Export Path",
+				val: path.join(remote.app.getPath("appData"), remote.app.getName(), "activity.txt"),
+				html: () => "<span class='floatR'>| <a onclick='window.utilities.openItem(window.utilities.settings.exportActivityPath.val || \x22./activity.txt\x22)' class='menuLink'>Open</a></span>" + generateSetting("url", "exportActivityPath", this, "Game Activity Export Path")
+			},
+			exportActivityString: {
+				name: "Game Activity Template String",
+				val: "Current Room: ${mode} on ${map}\\nLink: https://krunker.io/?game=${id}\\n${time} seconds remaining. I'm \x22${user}\x22 and using ${class.name}",
+				html: () => generateSetting("text", "exportActivityString", this, "Game Activity Export Template String")
+			},
 			// Disabled This feature since beta server is down
 			// betaServer: {
 			// 	name: "Beta Server",
@@ -427,8 +458,11 @@ class Utilities {
 	}
 
 	openItem(fullpath, allowMake = true) {
-		if (allowMake && !fs.existsSync(fullpath)) fs.mkdirSync(fullpath, { recursive: true })
-		remote.shell.showItemInFolder(fullpath)
+		if (allowMake && !fs.existsSync(fullpath)) {
+			!fs.existsSync(path.dirname(fullpath)) && fs.mkdirSync(path.dirname(fullpath))
+			fs.writeFileSync(fullpath, "")
+		}
+		remote.shell.showItemInFolder(path.resolve(fullpath))
 	}
 
 	generateStyle (text, id) {
@@ -436,6 +470,15 @@ class Utilities {
 		newElement.id = id
 		newElement.innerHTML = text
 		return newElement
+	}
+
+	flattenObject (obj, prefix = '') {
+		return Object.keys(obj).reduce((acc, cur) => {
+			const pre = prefix.length ? prefix + '.' : ''
+			if (obj[cur] && obj[cur].constructor.name == "Object") Object.assign(acc, this.flattenObject(obj[cur], pre + cur))
+			else acc[pre + cur] = obj[cur]
+			return acc
+		}, {})
 	}
 
 	initConsts() {
