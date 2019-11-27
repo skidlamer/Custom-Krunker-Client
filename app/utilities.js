@@ -62,7 +62,11 @@ class Utilities {
 				val: false,
 				html: () => generateSetting("checkbox", "preventAFK", this),
 				resources: {
-					cancelIdle: () => cancelPurchase(),
+					cancelIdle: () => {
+						try {
+							window.showWindow(-1)
+						} catch (e) { return e }
+					},
 					intervalId: null
 				},
 				set: (value, init)=> {
