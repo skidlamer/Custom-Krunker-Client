@@ -62,17 +62,12 @@ class Utilities {
 				val: false,
 				html: () => generateSetting("checkbox", "preventAFK", this),
 				resources: {
-					cancelIdle: () => {
-						try {
-							window.showWindow(-1)
-						} catch (e) { return e }
-					},
 					intervalId: null
 				},
 				set: (value, init)=> {
 					if (value) {
 						if (!init) this.settings.preventAFK.resources.cancelIdle()
-						this.settings.preventAFK.resources.intervalId = setInterval(this.settings.preventAFK.resources.cancelIdle, 60000)
+						this.settings.preventAFK.resources.intervalId = setInterval(window.cancelPurchase, 60000)
 					}
 					else if (!init) clearInterval(this.settings.preventAFK.resources.intervalId)
 				}
