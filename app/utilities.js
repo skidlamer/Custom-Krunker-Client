@@ -62,7 +62,7 @@ class Utilities {
 				val: false,
 				html: () => generateSetting("checkbox", "preventAFK", this),
 				resources: {
-					cancelIdle: () => idleTimer = -Infinity,
+					cancelIdle: () => cancelPurchase(),
 					intervalId: null
 				},
 				set: (value, init)=> {
@@ -285,12 +285,16 @@ class Utilities {
 				html: () => generateSetting("checkbox", "exportActivity", this),
 				resources: {
 					intervalId: null,
-					writeActivity: template =>{
-						let fullpath = config.get("utilities_exportActivityPath", path.join(remote.app.getPath("appData"), remote.app.getName(), "activity.txt"))
-						if (!fs.existsSync(fullpath)) {
-							!fs.existsSync(path.dirname(fullpath)) && fs.mkdirSync(path.dirname(fullpath))
-						}
-						fs.writeFileSync(fullpath, Object.entries(this.flattenObject(window.getGameActivity())).reduce((acc, cur) => acc.replace(new RegExp(`\\\${${cur[0]}}`, "g"), cur[1]), template).replace(/(?<!\\)\\n/g, "\n"))
+					writeActivity: template => {
+						let activity = null
+						try {
+							activity = window.getGameActivity()
+							let fullpath = config.get("utilities_exportActivityPath", path.join(remote.app.getPath("appData"), remote.app.name, "activity.txt"))
+							if (!fs.existsSync(fullpath)) {
+								!fs.existsSync(path.dirname(fullpath)) && fs.mkdirSync(path.dirname(fullpath))
+							}
+							fs.writeFileSync(fullpath, Object.entries(this.flattenObject(activity)).reduce((acc, cur) => acc.replace(new RegExp(`\\\${${cur[0]}}`, "g"), cur[1]), template).replace(/(?<!\\)\\n/g, "\n"))
+						} catch (e) { return e }
 					}
 				},
 				set: value => {
@@ -302,7 +306,7 @@ class Utilities {
 			},
 			exportActivityPath: {
 				name: "Game Activity Export Path",
-				val: path.join(remote.app.getPath("appData"), remote.app.getName(), "activity.txt"),
+				val: path.join(remote.app.getPath("appData"), remote.app.name, "activity.txt"),
 				html: () => "<span class='floatR'>| <a onclick='window.utilities.openItem(window.utilities.settings.exportActivityPath.val || \x22./activity.txt\x22)' class='menuLink'>Open</a></span>" + generateSetting("url", "exportActivityPath", this, "Game Activity Export Path")
 			},
 			exportActivityString: {
@@ -352,7 +356,7 @@ class Utilities {
 				  |
 				  <a onclick='window.utilities.relaunchClient()' class='menuLink'>Relaunch Client</a>
 				  |
-				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.getName()))' class='menuLink'>Open appData</a>
+				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.name))' class='menuLink'>Open appData</a>
 				  |
 				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("documents"), "/KrunkerResourceSwapper"))' class='menuLink'>Open Resource Swapper<\a>
 	           `;

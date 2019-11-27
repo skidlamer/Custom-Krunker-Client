@@ -30,7 +30,7 @@ const isDiscordRPCEnabled = !config.get("utilities_disableDiscordRPC")
 const RichPresence = window.rp = isDiscordRPCEnabled ? {
 
 	init() {
-		this.gameInfo = null;
+		this.gameInfo = [];
 		this.getGameInfo();
 		setInterval(() => {
 			RichPresence.update();
@@ -49,9 +49,6 @@ const RichPresence = window.rp = isDiscordRPCEnabled ? {
 				this.gameInfo = json;
 			})
 			.catch(console.warn);
-	},
-		getPlayers() {
-		return this.gameInfo && this.gameInfo.clients ? ' - (' + this.gameInfo.clients + ' of ' + this.gameInfo.maxClients + ')' : '';
 	},
 		isIdle() {
 		return instructionHolder.innerText.includes('Try seeking a new game');
@@ -90,8 +87,13 @@ const RichPresence = window.rp = isDiscordRPCEnabled ? {
 			activity.smallImageKey = 'icon_' + this.info.class.index;
 			activity.smallImageText = this.info.class.name;
 		}
-			activity.details = (this.info.custom ? 'Custom Match' : 'Public Match') + this.getPlayers();
-		activity.state = this.info.mode + " on " + this.info.map;
+		if (this.gameInfo.length && this.gameInfo[2] != undefined && this.gameInfo[3] != undefined) {
+			activity.partySize = this.gameInfo[2];
+			activity.partyMax = this.gameInfo[3];
+		}
+
+		activity.state = (this.info.custom ? 'Custom Match' : 'Public Match')
+		activity.details = this.info.mode + " on " + this.info.map;
 		gameWindow.rpc.setActivity2(0, activity);
 	},
 		sendOther(win, txt) {
@@ -117,7 +119,7 @@ const RichPresence = window.rp = isDiscordRPCEnabled ? {
 	},
 
 	insertNotification(user, type, session, channel, message) {
-		if (this.gameInfo && this.gameInfo.clients == this.gameInfo.maxClients && type != undefined) return this.sendIgnore(user);
+		if (this.gameInfo.length && this.gameInfo[2] == this.gameInfo[3] && type != undefined) return this.sendIgnore(user);
 		for (chatList.innerHTML += `<div class='chatItem'>${user.username} ${type == undefined ? 'wants to join':'invited you'} <span class='chatMsg'>
         <input onclick='window.rp.sendAccept(${user.id}, ${type}, ${session}, ${channel}, ${message}); this.parentNode.innerHTML = "Accepted";' type='button' value='Accept' style='color: #9eeb56; border: none; background-color: #ffffff22; border-radius: 3px'>
         <input onclick='window.rp.sendIgnore(${user.id}); this.parentNode.innerHTML = "Declined";' type='button' value='Decline' style='color: #eb5656; border: none; background-color: #ffffff22; border-radius: 3px'></span></div><br/>`; chatList.scrollHeight >= 250;) chatList.removeChild(chatList.childNodes[0])
