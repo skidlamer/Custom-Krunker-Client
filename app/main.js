@@ -379,7 +379,7 @@ const initSplashWindow = () => {
 		height: 370,
 		transparent: true,
 		frame: false,
-		// skipTaskbar: true, // Enabled by default
+		// skipTaskbar: true, // I dont like this
 		center: true,
 		resizable: false,
 		webPreferences: {
@@ -394,7 +394,7 @@ const initSplashWindow = () => {
 		slashes: true
 	}));
 	splashWindow.webContents.once('did-finish-load', () => initUpdater());
-	if (consts.DEBUG) splashWindow.webContents.openDevTools({ mode: 'undocked' }); // Disabled by default
+	if (consts.DEBUG) splashWindow.webContents.openDevTools({ mode: 'undocked' });
 };
 
 const initPromptWindow = () => {
