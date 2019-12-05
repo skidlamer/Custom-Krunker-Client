@@ -18,7 +18,7 @@ let gameWindow = null,
 	current = 0;
 
 const autoUpdateType = (RegExp(`^(${Object.keys(consts.autoUpdateTypes).join("|")})$`).exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
-consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false)	
+consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false)
 app.userAgentFallback = app.userAgentFallback.replace(/(?<=io).custom(?=.krunker.desktop)|-custom\.\d+/g, "")
 
 const initLogging = () => {
@@ -41,7 +41,6 @@ const initSwitches = () => {
 	if (config.get('utilities_d3d9Mode', false)) {
 		app.commandLine.appendSwitch('use-angle', 'd3d9');
 		app.commandLine.appendSwitch('enable-webgl2-compute-context');
-		app.commandLine.appendSwitch('renderer-process-limit', 100);
 		app.commandLine.appendSwitch('max-active-webgl-contexts', 100);
 	}
 };
@@ -162,7 +161,8 @@ const initGameWindow = () => {
 
 	// Resource Dumper
 	if (config.get("utilities_dumpResources", false)) {
-		let dumpedURLs = []
+		let dumpedURLs = [],
+			dumpPath = config.get("utilities_dumpPath", "") || path.join(app.getPath("documents"), "KrunkerResourceDump")
 		gameWindow.webContents.session.webRequest.onCompleted(details => {
 			if (details.statusCode == 200 && /^http(s?):\/\/(beta\.)?krunker.io\/*/.test(details.url) && !dumpedURLs.includes(details.url)) {
 				dumpedURLs.push(details.url)
@@ -173,8 +173,9 @@ const initGameWindow = () => {
 						res.setEncoding("binary")
 						res.on("data", chunk => raw += chunk)
 						res.on("end", () => {
-							let target = new url.URL(details.url), dumpPath = config.get("utilities_dumpPath", path.join(app.getPath("documents"), "KrunkerResourceDump"))
-							if (!fs.existsSync(path.join(dumpPath, target.hostname, path.dirname(target.pathname)))) fs.mkdirSync(path.join(dumpPath, target.hostname, path.dirname(target.pathname)), { recursive: true })
+							let target = new url.URL(details.url),
+								targetPath = path.join(dumpPath, target.hostname, path.dirname(target.pathname))
+							if (!fs.existsSync(targetPath)) fs.mkdirSync(targetPath, { recursive: true })
 							fs.writeFileSync(path.join(dumpPath, target.hostname, target.pathname == "/" ? "index.html" : target.pathname), raw, "binary")
 						})
 					}

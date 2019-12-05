@@ -66,8 +66,7 @@ class Utilities {
 				},
 				set: (value, init)=> {
 					if (value) {
-						if (!init) this.settings.preventAFK.resources.cancelIdle()
-						this.settings.preventAFK.resources.intervalId = setInterval(window.cancelPurchase, 60000)
+						if (!init) this.settings.preventAFK.resources.intervalId = setInterval(window.cancelPurchase, 60000)
 					}
 					else if (!init) clearInterval(this.settings.preventAFK.resources.intervalId)
 				}
@@ -260,7 +259,7 @@ class Utilities {
 			customSplashFont: {
 				name: "Custom Splash Font",
 				val: "",
-				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22customSplashFont\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.customSplashFont.val' class='menuLink'>Open</a></span>" + generateSetting("url", "customSplashFont", this, "Splash Screen Font Path/URL")
+				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22customSplashFont\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.customSplashFont.val)' class='menuLink'>Open</a></span>" + generateSetting("url", "customSplashFont", this, "Splash Screen Font Path/URL")
 			},
 			autoUpdateType: {
 				name: "Auto Update Type",
@@ -329,7 +328,7 @@ class Utilities {
 			dumpPath: {
 				name: "Dump Path",
 				val: consts.joinPath(remote.app.getPath("documents"), "KrunkerResourceDump"),
-				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22dumpPath\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.dumpPath.val || path.join(remote.app.getPath(\x22documents\x22), \x22KrunkerResourceDump\x22))' class='menuLink'>Open</a></span>" + generateSetting("url", "dumpPath", this, "Resource Dump Output Path")
+				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22dumpPath\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.dumpPath.val || path.join(remote.app.getPath(\x22documents\x22), \x22KrunkerResourceDump\x22), true)' class='menuLink'>Open</a></span>" + generateSetting("url", "dumpPath", this, "Resource Dump Output Path")
 			},
 			debugMode: {
 				name: "Debug Mode",
@@ -357,7 +356,7 @@ class Utilities {
 				  |
 				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("appData"), remote.app.name))' class='menuLink'>Open appData</a>
 				  |
-				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("documents"), "/KrunkerResourceSwapper"))' class='menuLink'>Open Resource Swapper<\a>
+				  <a onclick='remote.shell.openItem(path.join(remote.app.getPath("documents"), "/KrunkerResourceSwapper"), true)' class='menuLink'>Open Resource Swapper<\a>
 	           `;
 				return tmpHTML;
 			};
@@ -439,18 +438,6 @@ class Utilities {
 		if (this.settings[t].set) this.settings[t].set(e);
 	}
 
-	keyDown(event) {
-		if (document.activeElement.tagName == "INPUT") return;
-		switch (event.key) {
-		case '`':
-			if (event.ctrlKey || event.shiftKey) return;
-			document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
-			document.exitPointerLock();
-			window.showWindow(window.windows.length);
-			break;
-		}
-	}
-
 	fixMenuSettings() {
 		[...document.querySelectorAll(".menuItemIcon")].forEach(el => el.style.height = "60px");
 	}
@@ -460,10 +447,10 @@ class Utilities {
 		remote.app.exit(0)
 	}
 
-	openItem(fullpath, allowMake = true) {
+	openItem(fullpath, dir = false, allowMake = true) {
 		if (allowMake && !fs.existsSync(fullpath)) {
-			!fs.existsSync(path.dirname(fullpath)) && fs.mkdirSync(path.dirname(fullpath))
-			fs.writeFileSync(fullpath, "")
+			!fs.existsSync(path.dirname(fullpath)) && fs.mkdirSync(path.dirname(fullpath), { recursive: true })
+			dir ? fs.mkdirSync(fullpath) : fs.writeFileSync(fullpath, "")
 		}
 		remote.shell.showItemInFolder(path.resolve(fullpath))
 	}
@@ -495,7 +482,6 @@ class Utilities {
 		this.fixMenuSettings();
 		this.createWatermark();
 		this.createSettings();
-		window.addEventListener("keydown", event => this.keyDown(event));
 
 		window.remote = remote
 		window.path = require("path")
