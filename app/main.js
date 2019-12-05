@@ -1,5 +1,5 @@
 require('v8-compile-cache');
-const { BrowserWindow, app, shell, Menu, ipcMain, net } = require('electron');
+const { BrowserWindow, app, shell, Menu, ipcMain, net, remote } = require('electron');
 const shortcut = require('electron-localshortcut');
 const consts = require('./constants.js');
 const url = require('url');
@@ -36,12 +36,10 @@ const initSwitches = () => {
 		app.commandLine.appendSwitch('disable-frame-rate-limit');
 	}
 	app.commandLine.appendSwitch('enable-quic');
-	app.commandLine.appendSwitch('high-dpi-support',1);
 	app.commandLine.appendSwitch('ignore-gpu-blacklist');
 	if (config.get('utilities_d3d9Mode', false)) {
 		app.commandLine.appendSwitch('use-angle', 'd3d9');
 		app.commandLine.appendSwitch('enable-webgl2-compute-context');
-		app.commandLine.appendSwitch('max-active-webgl-contexts', 100);
 	}
 };
 initSwitches();
@@ -127,7 +125,7 @@ const initGameWindow = () => {
 			preload: consts.joinPath(__dirname, 'preload.js')
 		}
 	});
-	gameWindow.setMenu(null);
+	gameWindow.removeMenu()
 	gameWindow.rpc = rpc;
 
 	let swapFolder = consts.joinPath(app.getPath('documents'), '/KrunkerResourceSwapper');
@@ -240,7 +238,7 @@ const initEditorWindow = () => {
 		}
 	});
 
-	editorWindow.setMenu(null);
+	editorWindow.removeMenu();
 	editorWindow.rpc = rpc;
 
 	editorWindow.loadURL(`https://${config.get("utilities_betaServer", false) ? "beta." : ""}krunker.io/editor.html`);
@@ -285,7 +283,7 @@ const initSocialWindow = (url) => {
 		}
 	});
 
-	socialWindow.setMenu(null);
+	socialWindow.removeMenu();
 	socialWindow.rpc = rpc;
 
 	socialWindow.loadURL(url);
@@ -338,7 +336,7 @@ const initViewerWindow = (url) => {
 		}
 	});
 
-	viewerWindow.setMenu(null);
+	viewerWindow.removeMenu();
 	viewerWindow.rpc = rpc;
 
 	viewerWindow.loadURL(url);
@@ -388,7 +386,7 @@ const initSplashWindow = () => {
 			nodeIntegration: true
 		}
 	});
-	splashWindow.setMenu(null);
+	splashWindow.removeMenu();
 	// splashWindow.loadFile(consts.joinPath(__dirname, 'splash.html'));
 	splashWindow.loadURL(url.format({
 		pathname: consts.joinPath(__dirname, 'splash.html'),
@@ -495,19 +493,19 @@ const initShortcuts = () => {
 	const KEY_BINDS = {
 		escape: {
 			key: 'Esc',
-			press: _ => gameWindow.webContents.send('esc')
-		},
-		quit: {
-			key: 'Alt+F4',
-			press: _ => app.quit()
+			press: () => gameWindow.webContents.send('esc')
 		},
 		refresh: {
-			key: 'F5',
-			press: _ => gameWindow.webContents.reloadIgnoringCache()
+			key: "F5",
+			press: () => gameWindow.webContents.reload()
 		},
+		hardRefresh: {
+			key: 'Shift+F5',
+			press: () => gameWindow.webContents.reloadIgnoringCache()
+		},		
 		fullscreen: {
 			key: 'F11',
-			press: _ => {
+			press: () => {
 				let full = !gameWindow.isFullScreen();
 				gameWindow.setFullScreen(full);
 				config.set("fullscreen", full);
@@ -528,6 +526,13 @@ const initShortcuts = () => {
 		toggleDevTools: {
 			key: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
 			press: () => gameWindow.toggleDevTools()
+		},
+		relaunch: {
+			key: "Ctrl+R",
+			press: () => {
+				app.relaunch()
+				app.quit()
+			}
 		},
 		newServer: {
 			key: "F6",
