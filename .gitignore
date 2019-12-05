@@ -168,6 +168,4 @@ ts-gen
 
 # Custom
 
-.tools/
-
 electron-builder.env
