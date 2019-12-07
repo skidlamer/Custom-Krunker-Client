@@ -139,8 +139,8 @@ const initGameWindow = () => {
 					allFilesSync(filePath);
 			} else {
 				if (!(/\.(html|js)/g.test(file))) {
-					let krunk = `*://krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}*`
-					swap.filter.urls.push(krunk, krunk.replace("://", "://beta."));
+					let krunk = `*://${/\\(css|img|libs|sound)$/.test(dir) ? "" : "assets."}krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}*`
+					swap.filter.urls.push(krunk/* , krunk.replace("://", "://beta.") */);
 					swap.files[krunk.replace(/\*/g, '')] = url.format({
 						pathname: filePath,
 						protocol: 'file:',
