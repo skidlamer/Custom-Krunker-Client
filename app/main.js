@@ -134,12 +134,14 @@ const initGameWindow = () => {
 	const allFilesSync = (dir, fileList = []) => {
 		fs.readdirSync(dir).forEach(file => {
 			const filePath = consts.joinPath(dir, file);
+			let useAssets = RegExp(`${swapFolder.replace(/\\/g, "\\\\")}\\\\(models|textures)\\b`).test(dir);
 			if (fs.statSync(filePath).isDirectory()) {
 				if (!(/\\(docs)$/.test(filePath)))
 					allFilesSync(filePath);
 			} else {
 				if (!(/\.(html|js)/g.test(file))) {
-					let krunk = `*://${/\\(css|img|libs|sound)$/.test(dir) ? "" : "assets."}krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}*`
+					let krunk = `*://${useAssets ? "assets." : ""}krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}*`
+					console.log(dir, useAssets, krunk)
 					swap.filter.urls.push(krunk/* , krunk.replace("://", "://beta.") */);
 					swap.files[krunk.replace(/\*/g, '')] = url.format({
 						pathname: filePath,
@@ -162,7 +164,7 @@ const initGameWindow = () => {
 		let dumpedURLs = [],
 			dumpPath = config.get("utilities_dumpPath", "") || path.join(app.getPath("documents"), "KrunkerResourceDump")
 		gameWindow.webContents.session.webRequest.onCompleted(details => {
-			if (details.statusCode == 200 && /^http(s?):\/\/(beta\.)?krunker.io\/*/.test(details.url) && !dumpedURLs.includes(details.url)) {
+			if (details.statusCode == 200 && /^http(s?):\/\/(beta|assets\.)?krunker.io\/*/.test(details.url) && !dumpedURLs.includes(details.url)) {
 				dumpedURLs.push(details.url)
 				const request = net.request(details.url)
 				let raw = ""
