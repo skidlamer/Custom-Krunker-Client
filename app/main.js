@@ -530,7 +530,7 @@ const initShortcuts = () => {
 			press: () => gameWindow.toggleDevTools()
 		},
 		relaunch: {
-			key: "Ctrl+R",
+			key: "Alt+Ctrl+Shift+R",
 			press: () => {
 				app.relaunch()
 				app.quit()
