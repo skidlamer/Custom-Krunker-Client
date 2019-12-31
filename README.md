@@ -44,6 +44,7 @@ I'm accepting bug reports, suggestions and feedbacks in our Discord.
 	- Adds a button that relaunch the client
 	- Auto updater support with GitHub - When there is a new custom client release, auto updater automatically installs it
 	- Export current game state to a file - Can be used for some Twitch bot that reads local file, etc.
+	- Relanch the client by pressing Alt + Ctrl + Shift + R key
 - Network
 	- Ability to dump network resources ( useful for making mods and customizations / may reduce performance / optional / disable Resource Swapper if you want to dump all files since it prevents dumper from duming some files )
 - Debugging

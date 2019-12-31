@@ -185,7 +185,7 @@ const initGameWindow = () => {
 		})
 	}
 
-	gameWindow.loadURL(`https://${config.get("utilities_betaServer", false) ? "beta." : ""}krunker.io`);
+	gameWindow.loadURL(`https://krunker.io`);
 
 	let nav = (e, url) => {
 		e.preventDefault();
@@ -243,7 +243,7 @@ const initEditorWindow = () => {
 	editorWindow.removeMenu();
 	editorWindow.rpc = rpc;
 
-	editorWindow.loadURL(`https://${config.get("utilities_betaServer", false) ? "beta." : ""}krunker.io/editor.html`);
+	editorWindow.loadURL(`https://krunker.io/editor.html`);
 
 	let nav = (e, url) => {
 		e.preventDefault();
@@ -381,7 +381,7 @@ const initSplashWindow = () => {
 		height: 370,
 		transparent: true,
 		frame: false,
-		// skipTaskbar: true, // I dont like this
+		// skipTaskbar: true,
 		center: true,
 		resizable: false,
 		webPreferences: {
@@ -411,7 +411,7 @@ const initPromptWindow = () => {
 			show: false,
 			frame: false,
 			// skipTaskbar: true,
-			alwaysOnTop: true,
+			// alwaysOnTop: true,
 			resizable: false,
 			// movable: false,
 			darkTheme: true,
