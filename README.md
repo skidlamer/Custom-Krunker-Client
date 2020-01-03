@@ -72,16 +72,17 @@ You don't have to download `.blockmap` or `.yml` files, because those files are 
 ### Running from source code
 If your system doesn't support those released files, or you want to get latest version of the client, you can run the client by following the guide below: 
 - Requirements for both methods
-	1. Install [Node.js](https://nodejs.org/en/download/). Versions above 9.0.0 should works fine. If you using `apt` to install Node.js, please note that apt may not work because apt provides very old version of Node.js. You can use [nvm](https://github.com/nvm-sh/nvm) to easily manage Node.js versions so it is highly recommended.
+	1. Install [Node.js](https://nodejs.org/en/download/).  
+	Versions above 9.0.0 should works fine. If you using `apt` to install Node.js, please note that apt may not work because apt provides very old version of Node.js. You can use [nvm](https://github.com/nvm-sh/nvm) to easily manage Node.js versions so it is highly recommended. You can check the version of Node by running `node -v`.
 	2. [Download ZIP](https://github.com/Mixaz017/Custom-Krunker-Client/archive/master.zip) and extract, or clone this repository. We call the extracted directory or the cloned repository "local repository".
 	3. Open CLI ( Command Prompt, Terminal, etc. ) from local repository and run `npm i`. This command should install all dependency modules.
 - Build method ( recommended )  
-	This method will build a executable file.
+	With this method, you can build executable files like `.exe`.
 	1. Open CLI and run `npm i electron-builder -g`. This command should install `electron-builder` module globally.
 	2. Run `electron-builder -c.win="" -c.mac="" -c.linux=""`. The executable file will be created in `dist` directory.
 	3. Run the executable file in `dist` directory.
 - No build method  
-	This method simply launches the client directly, without building. You have to do this method every time you want to launch the client.
+	This method simply launches the client directly, without building. You have to do this method every time you want to launch the client if you prefer this method.
 	1. Open CLI and run `npm start`. This command should launch the client.
 
 #### Gone Features
