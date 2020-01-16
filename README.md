@@ -86,9 +86,3 @@ If your system doesn't support those released files, or you want to get latest v
 - No build method  
 	This method simply launches the client directly, without building. You have to do this method every time you want to launch the client if you prefer this method.
 	1. Open CLI and run `npm start`. This command should launch the client.
-
-#### Gone Features
-- Network
-	- Connects to the beta servers ( since `beta.krunker.io` is not hosted anymore )
-- Client Tweaks
-	- Patches resource swapper to work with beta server
