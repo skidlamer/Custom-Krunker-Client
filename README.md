@@ -62,10 +62,12 @@ I'm accepting bug reports, suggestions and feedbacks in our Discord.
 
 ### Releases
 There are binary releases available. You can download the [latest release](https://github.com/Mixaz017/Custom-Krunker-Client/releases/latest) and start playing quickly.
-- `Custom-Krunker-Client-Setup-<version>.exe` - Windows 32 & 64-bit installer
-- `Custom-Krunker-Client-<version>.AppImage` - Linux 64-bit portable executable
-- `Custom-Krunker-Client-<version>-i386.AppImage` - Linux 32-bit portable executable
-- `Custom-Krunker-Client-<version>.exe` - Windows 32 & 64-bit portable executable
+- Windows:
+	- `Custom-Krunker-Client-Setup-<version>.exe` - 32 & 64-bit installer
+	- `Custom-Krunker-Client-<version>.exe` - 32 & 64-bit portable executable
+- Linux:
+	- `Custom-Krunker-Client-<version>.AppImage` - 64-bit portable executable
+	- `Custom-Krunker-Client-<version>-i386.AppImage` - 32-bit portable executable
 
 You don't have to download `.blockmap` or `.yml` files, because those files are released only for auto update purpose.
 
