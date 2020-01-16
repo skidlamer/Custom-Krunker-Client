@@ -17,6 +17,12 @@ let gameWindow = null,
 	promptWindow = null,
 	current = 0;
 
+['SIGTERM', 'SIGHUP', 'SIGINT', 'SIGBREAK'].forEach((signal) => {
+	process.on(signal, () => {
+		app.quit()
+	})
+});
+
 const autoUpdateType = (RegExp(`^(${Object.keys(consts.autoUpdateTypes).join("|")})$`).exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
 consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false)
 app.userAgentFallback = app.userAgentFallback.replace(/(?<=io).custom(?=.krunker.desktop)|-custom\.\d+/g, "")
@@ -414,6 +420,7 @@ const initPromptWindow = () => {
 			// alwaysOnTop: true,
 			resizable: false,
 			// movable: false,
+			transparent: true,
 			darkTheme: true,
 			center: true,
 			webPreferences: {
@@ -484,7 +491,7 @@ const initUpdater = () => {
 	autoUpdater.on('update-downloaded', (info) => {
 		if (updateCheckFallback) clearTimeout(updateCheckFallback);
 		splashWindow.webContents.send('update-downloaded', info);
-		setTimeout(() => autoUpdater.quitAndInstall(), 2500);
+		setTimeout(() => autoUpdater.quitAndInstall(true, true), 2500);
 	});
 	autoUpdater.channel = "latest";
 	autoUpdater.autoDownload = autoUpdateType == "download"
@@ -545,12 +552,6 @@ const initShortcuts = () => {
 		shortcut.register(gameWindow, KEY_BINDS[k].key, KEY_BINDS[k].press);
 	});
 };
-
-['SIGTERM', 'SIGHUP', 'SIGINT', 'SIGBREAK'].forEach((signal) => {
-	process.on(signal, () => {
-		app.quit()
-	})
-});
 
 app.once('ready', () => initSplashWindow());
 app.on('activate', () => {

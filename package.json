@@ -1,6 +1,6 @@
 {
 	"name": "io.custom.krunker.desktop",
-	"version": "1.8.2-custom.1",
+	"version": "1.8.3-custom.0",
 	"description": "Customized Desktop Client For Krunker",
 	"author": "Mixaz",
 	"main": "app/main.js",

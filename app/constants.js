@@ -25,10 +25,6 @@ module.exports.PING_REGION_CACHE_KEY = "pingRegion4";
 
 module.exports.DISCORD_ID = '560173821533880322';
 
-module.exports.NO_CACHE = {
-	"extraHeaders": "pragma: no-cache\n"
-};
-
 String.prototype.isCode = function() {
 	return module.exports.GAME_CODE_REGEX.test(this + '');
 };
