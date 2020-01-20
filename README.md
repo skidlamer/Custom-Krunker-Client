@@ -11,7 +11,6 @@ I'm accepting bug reports, suggestions and feedbacks in our Discord.
 ## How it Works and Why this Client?
 - This client is meant to be a superior of the official client.
 - Many extra features available. You can suggest features you want in the Discord to improve the client as well.
-- This client doesn't show fake FPS unlike _MTZ ( shows fake FPS that multiplied by 1.2 )_ and _Official Krunker.io Client Lite 1.0.2 ( multiplies by 1.5 )_.
 
 ## Current Features
 - Every single features from official client is available ( Resource Swapper, Unlimited FPS, etc. )
