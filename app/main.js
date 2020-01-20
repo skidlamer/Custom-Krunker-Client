@@ -147,7 +147,6 @@ const initGameWindow = () => {
 			} else {
 				if (!(/\.(html|js)/g.test(file))) {
 					let krunk = `*://${useAssets ? "assets." : ""}krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}*`
-					console.log(dir, useAssets, krunk)
 					swap.filter.urls.push(krunk/* , krunk.replace("://", "://beta.") */);
 					swap.files[krunk.replace(/\*/g, '')] = url.format({
 						pathname: filePath,
