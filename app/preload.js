@@ -1,3 +1,4 @@
+require("./log.js")
 const { remote, ipcRenderer } = require('electron');
 const gameWindow = remote.getCurrentWindow();
 const consts = require('./constants.js');

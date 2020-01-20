@@ -1,5 +1,6 @@
 require('v8-compile-cache');
-const { BrowserWindow, app, shell, Menu, ipcMain, net, remote } = require('electron');
+require("./log.js")
+const { BrowserWindow, app, shell, Menu, ipcMain, net} = require('electron');
 const shortcut = require('electron-localshortcut');
 const consts = require('./constants.js');
 const url = require('url');
@@ -26,13 +27,6 @@ let gameWindow = null,
 const autoUpdateType = (RegExp(`^(${Object.keys(consts.autoUpdateTypes).join("|")})$`).exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
 consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false)
 app.userAgentFallback = app.userAgentFallback.replace(/(?<=io).custom(?=.krunker.desktop)|-custom\.\d+/g, "")
-
-const initLogging = () => {
-	console.debug("-------------------- Client Start --------------------");
-
-	process.on('uncaughtException', console.error);
-};
-initLogging();
 
 const initSwitches = () => {
 	// Usefull info
