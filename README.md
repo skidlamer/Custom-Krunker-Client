@@ -22,7 +22,6 @@ I'm accepting bug reports, suggestions and feedbacks in our Discord.
 	- Fixes a bug with the Discord RPC
 	- Fixes splash screen font size
 - General Tweaks
-	- Prevents AFK kick ( optional )
 	- Remembers server search ( optional )
 	- Seek for new server by pressing F6 key
 - Interface Tweaks

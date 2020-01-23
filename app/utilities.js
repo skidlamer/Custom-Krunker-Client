@@ -56,7 +56,7 @@ class Utilities {
 				val: true,
 				html: () => generateSetting("checkbox", "customFontsCSSFix", this)
 			},
-			preventAFK: {
+			/* preventAFK: {
 				name: "Prevent AFK Kick",
 				pre: "<div class='setHed customUtility'>General Tweak</div>",
 				val: false,
@@ -70,7 +70,7 @@ class Utilities {
 					}
 					else if (!init) clearInterval(this.settings.preventAFK.resources.intervalId)
 				}
-			},
+			}, */
 			rememberSearch: {
 				name: "Remember Server Search",
 				val: false,
