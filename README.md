@@ -16,6 +16,8 @@ I'm accepting bug reports, suggestions and feedbacks in our Discord.
 - Every single features from official client is available ( Resource Swapper, Unlimited FPS, etc. )
 - May improves load time, and better memory managing 
 ---
+- Performance
+	- More accurate FPS limiter ( you can still prefer the original FPS limiter by setting this to 0 )
 - Patches
 	- Adds compatibility with custom fonts to few social and market pages ( optional )
 	- Fixes "Clear Cache" button ( also works faster )
