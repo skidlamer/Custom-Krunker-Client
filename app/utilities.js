@@ -50,6 +50,15 @@ class Utilities {
 					}
 				}
 			},
+			frameLimit: {
+				name: "Hard FPS Limit",
+				pre: "<div class='setHed customUtility'>More Performance</div>",
+				val: 0,
+				min: 0,
+				max: 1000,
+				step: 1,
+				html: () => generateSetting("slider", "frameLimit", this)
+			},
 			customFontsCSSFix: {
 				name: "Fix CSS for Custom Fonts",
 				pre: "<div class='setHed customUtility'>Patch</div>",	
@@ -251,18 +260,18 @@ class Utilities {
 				}
 			},
 			customSplashBackground: {
-				name: "Custom Splash Background",
+				name: "Custom Splash Screen Background",
 				pre: "<div class='setHed customUtility'>Splash Screen</div>",
 				val: "",
 				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22customSplashBackground\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.customSplashBackground.val)' class='menuLink'>Open</a></span>" + generateSetting("url", "customSplashBackground", this, "Splash Screen Background Path/URL")
 			},
 			customSplashFont: {
-				name: "Custom Splash Font",
+				name: "Custom Splash Screen Font",
 				val: "",
 				html: () => "<span class='floatR'>| <a onclick='let dirPath = remote.dialog.showOpenDialogSync({properties: [\x22openDirectory\x22]}); if (dirPath && dirPath[0]) utilities.setSetting(\x22customSplashFont\x22, dirPath[0])' class='menuLink'>Select</a> | <a onclick='window.utilities.openItem(window.utilities.settings.customSplashFont.val)' class='menuLink'>Open</a></span>" + generateSetting("url", "customSplashFont", this, "Splash Screen Font Path/URL")
 			},
 			autoUpdateType: {
-				name: "Auto Update Type",
+				name: "Auto Update Behavior",
 				pre: "<div class='setHed customUtility'>Client Tweak</div>",
 				val: "download",
 				html: () => generateSetting("select", "autoUpdateType", this, consts.autoUpdateTypes)
@@ -278,7 +287,7 @@ class Utilities {
 				html: () => generateSetting("checkbox", "disableDiscordRPC", this)
 			},
 			exportActivity: {
-				name: "Export Game Activity",
+				name: "Export Game Status",
 				val: false,
 				html: () => generateSetting("checkbox", "exportActivity", this),
 				resources: {
@@ -303,12 +312,12 @@ class Utilities {
 				} 
 			},
 			exportActivityPath: {
-				name: "Game Activity Export Path",
+				name: "Game Status Export Path",
 				val: path.join(remote.app.getPath("appData"), remote.app.name, "activity.txt"),
 				html: () => "<span class='floatR'>| <a onclick='window.utilities.openItem(window.utilities.settings.exportActivityPath.val || \x22./activity.txt\x22)' class='menuLink'>Open</a></span>" + generateSetting("url", "exportActivityPath", this, "Game Activity Export Path")
 			},
 			exportActivityString: {
-				name: "Game Activity Template String",
+				name: "Game Status Template String",
 				val: "Current Room: ${mode} on ${map}\\nLink: https://krunker.io/?game=${id}\\n${time} seconds remaining. I'm \x22${user}\x22 and using ${class.name}",
 				html: () => generateSetting("text", "exportActivityString", this, "Game Activity Export Template String")
 			},
@@ -477,6 +486,21 @@ class Utilities {
 		this.consts.css = consts.css
 	}
 
+	waitGameInit() {
+		if (window.hasOwnProperty("windows")) {
+			// FPS Limit
+			const requestAnimFrameOrig = requestAnimFrame
+			var lastTime = 0
+			requestAnimFrame = function() {
+				if (utilities.settings.frameLimit.val > 0) {
+					while (performance.now() - lastTime < 1000 / utilities.settings.frameLimit.val) {}
+					lastTime = performance.now()
+				}
+				requestAnimFrameOrig(...arguments)
+			}
+		} else setTimeout(this.waitGameInit, 200)
+	}
+
 	onLoad() {
 		this.initConsts()
 		this.fixMenuSettings();
@@ -490,7 +514,10 @@ class Utilities {
             return clearTimeout(timeouts[name]), timeouts[name] = setTimeout(function () {
                 window.utilities.setSetting(name, object['value']);
             }, delay), true;
-        };
+		};
+		this.waitGameInit()
+		
+		
 	}
 }
 

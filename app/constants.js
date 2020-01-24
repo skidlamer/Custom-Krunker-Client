@@ -58,7 +58,7 @@ module.exports.hexToRGB = hex => hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,
 
 module.exports.autoUpdateTypes = {
 	download: "Download",
-	check: "Check",
+	check: "Check Only",
 	skip: "Skip"
 }
 
