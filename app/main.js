@@ -27,8 +27,17 @@ const initSwitches = () => {
 	// https://forum.manjaro.org/t/howto-google-chrome-tweaks-for-76-0-3809-100-or-newer-20190817/39946
 	if (config.get('utilities_unlimitedFrames', true)) {
 		if (consts.isAMDCPU) app.commandLine.appendSwitch('enable-zero-copy');
+		app.commandLine.appendSwitch('disable-gpu-vsync');
 		app.commandLine.appendSwitch('disable-frame-rate-limit');
 	}
+	if (!app.isPackaged) {
+		app.commandLine.appendSwitch('enable-logging');
+		app.commandLine.appendSwitch('v', "0"); // log level 0 default / 1 Verbose
+	}
+  else {
+  	app.commandLine.appendSwitch('disable-metrics');
+  	app.commandLine.appendSwitch('disable-metrics-repo');
+  }
 	app.commandLine.appendSwitch('enable-quic');
 	app.commandLine.appendSwitch('ignore-gpu-blacklist');
 	if (config.get('utilities_d3d9Mode', false)) {
@@ -36,6 +45,7 @@ const initSwitches = () => {
 		app.commandLine.appendSwitch('enable-webgl2-compute-context');
 	}
 };
+
 initSwitches();
 
 const initAppMenu = () => {
@@ -148,7 +158,7 @@ const initGameWindow = () => {
 			}
 		});
 	};
-	if (!config.get("utilities_disableResourceSwapper", false)) allFilesSync(swapFolder);
+	if (config.get("utilities_enableResourceSwapper", false)) allFilesSync(swapFolder);
 	if (swap.filter.urls.length) {
 		gameWindow.webContents.session.webRequest.onBeforeRequest(swap.filter, (details, callback) => {
 			let redirect = swap.files[details.url.replace(/https|http|(\?.*)|(#.*)/gi, '')] || details.url;
