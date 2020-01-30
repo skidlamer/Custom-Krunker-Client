@@ -1,22 +1,16 @@
-require('v8-compile-cache');
-require("./log.js")
-const { BrowserWindow, app, shell, Menu, ipcMain, net} = require('electron');
+const electron = require('electron');
+const {app, session, BrowserWindow, shell, Menu, ipcMain, net} = electron;
+const fs = require('fs');
+const path = require('path');
 const shortcut = require('electron-localshortcut');
 const consts = require('./constants.js');
 const url = require('url');
 const Store = require('electron-store');
 const config = new Store();
-const fs = require('fs');
-const path = require("path")
+require('v8-compile-cache');
+require("./log.js")
 
-let rpc = null;
-let gameWindow = null,
-	editorWindow = null,
-	socialWindow = null,
-	viewerWindow = null,
-	splashWindow = null,
-	promptWindow = null,
-	current = 0;
+let rpc, gameWindow, editorWindow, socialWindow, viewerWindow, splashWindow, promptWindow, current;
 
 ['SIGTERM', 'SIGHUP', 'SIGINT', 'SIGBREAK'].forEach((signal) => {
 	process.on(signal, () => {
@@ -113,9 +107,13 @@ if (!config.get("utilities_disableDiscordRPC", false)) {
 }
 
 const initGameWindow = () => {
+	const scr = electron.screen.getPrimaryDisplay().workArea;
 	gameWindow = new BrowserWindow({
-		width: 1600,
-		height: 900,
+		width: scr.width,
+		height: scr.height,
+		frame: true,
+		autoHideMenuBar: true, //hide menu bar
+		toolbar: false, //force title bar
 		show: false,
 		darkTheme: true,
 		center: true,
@@ -125,37 +123,39 @@ const initGameWindow = () => {
 			preload: consts.joinPath(__dirname, 'preload.js')
 		}
 	});
-	gameWindow.removeMenu()
+	gameWindow.maximize();
+	//gameWindow.removeMenu();
 	gameWindow.rpc = rpc;
 
+	// Resource Swapper
 	let swapFolder = consts.joinPath(app.getPath('documents'), '/KrunkerResourceSwapper');
 	try {fs.mkdir(swapFolder, { recursive: true }, e => {});}catch(e){};
 	let swap = { filter: { urls: [] }, files: {} };
 	const allFilesSync = (dir, fileList = []) => {
 		fs.readdirSync(dir).forEach(file => {
 			const filePath = consts.joinPath(dir, file);
-			let useAssets = RegExp(`${swapFolder.replace(/\\/g, "\\\\")}\\\\(models|textures)\\b`).test(dir);
+			let useAssets = !(/KrunkerResourceSwapper\\(css|docs|img|libs|pkg|sound)/.test(dir));
 			if (fs.statSync(filePath).isDirectory()) {
-				if (!(/\\(docs)$/.test(filePath)))
 					allFilesSync(filePath);
 			} else {
-				if (!(/\.(html|js)/g.test(file))) {
-					let krunk = `*://${useAssets ? "assets." : ""}krunker.io${filePath.replace(swapFolder, '').replace(/\\/g, '/')}*`
-					swap.filter.urls.push(krunk/* , krunk.replace("://", "://beta.") */);
+					let krunk = '*://'+(useAssets ? 'assets.':'')+'krunker.io' + filePath.replace(swapFolder, '').replace(/\\/g, '/') + '*';
+					swap.filter.urls.push(krunk);
 					swap.files[krunk.replace(/\*/g, '')] = url.format({
 						pathname: filePath,
 						protocol: 'file:',
 						slashes: true
 					});
-				}
 			}
 		});
 	};
 	if (!config.get("utilities_disableResourceSwapper", false)) allFilesSync(swapFolder);
 	if (swap.filter.urls.length) {
 		gameWindow.webContents.session.webRequest.onBeforeRequest(swap.filter, (details, callback) => {
-			callback({ cancel: false, redirectURL: swap.files[details.url.replace(/https|http|(\?.*)|(#.*)|(?<=:\/\/)beta./gi, '')] || details.url });
-		});
+			let redirect = swap.files[details.url.replace(/https|http|(\?.*)|(#.*)/gi, '')] || details.url;
+			callback({ cancel: false, redirectURL: redirect});
+			if(consts.DEBUG) console.log('Redirecting ', details.url, 'to', redirect);
+			//console.log('onBeforeRequest details', details);
+		});		
 	}
 
 	// Resource Dumper
