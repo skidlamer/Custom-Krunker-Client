@@ -19,7 +19,7 @@ let rpc, gameWindow, editorWindow, socialWindow, viewerWindow, splashWindow, pro
 });
 
 const autoUpdateType = (RegExp(`^(${Object.keys(consts.autoUpdateTypes).join("|")})$`).exec(consts.AUTO_UPDATE_TYPE || config.get("utilities_autoUpdateType")) || {input: "download"}).input
-consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false)
+consts.DEBUG = consts.DEBUG || config.get("utilities_debugMode", false) || !app.isPackaged;
 app.userAgentFallback = app.userAgentFallback.replace(/(?<=io).custom(?=.krunker.desktop)|-custom\.\d+/g, "")
 
 const initSwitches = () => {
@@ -30,7 +30,7 @@ const initSwitches = () => {
 		app.commandLine.appendSwitch('disable-gpu-vsync');
 		app.commandLine.appendSwitch('disable-frame-rate-limit');
 	}
-	if (!app.isPackaged) {
+	if (consts.DEBUG) {
 		app.commandLine.appendSwitch('enable-logging');
 		app.commandLine.appendSwitch('v', "0"); // log level 0 default / 1 Verbose
 	}
@@ -216,7 +216,7 @@ const initGameWindow = () => {
 	gameWindow.webContents.on('will-navigate', nav);
 
 	gameWindow.once('ready-to-show', () => {
-		if (consts.DEBUG) gameWindow.webContents.openDevTools({ mode: 'undocked' });
+		//if (consts.DEBUG) gameWindow.webContents.openDevTools({ mode: 'undocked' });
 		if (config.get('fullscreen', false)) gameWindow.setFullScreen(true);
 		splashWindow.destroy();
 		gameWindow.show();
@@ -265,7 +265,7 @@ const initEditorWindow = () => {
 	editorWindow.webContents.on('will-navigate', nav);
 
 	editorWindow.once('ready-to-show', () => {
-		if (consts.DEBUG) editorWindow.webContents.openDevTools({ mode: 'undocked' });
+		//if (consts.DEBUG) editorWindow.webContents.openDevTools({ mode: 'undocked' });
 		editorWindow.show();
 	});
 
@@ -318,7 +318,7 @@ const initSocialWindow = (url) => {
 	socialWindow.webContents.on('will-navigate', nav);
 
 	socialWindow.once('ready-to-show', () => {
-		if (consts.DEBUG) socialWindow.webContents.openDevTools({ mode: 'undocked' });
+		//if (consts.DEBUG) socialWindow.webContents.openDevTools({ mode: 'undocked' });
 		socialWindow.show();
 	});
 
@@ -371,7 +371,7 @@ const initViewerWindow = (url) => {
 	viewerWindow.webContents.on('will-navigate', nav);
 
 	viewerWindow.once('ready-to-show', () => {
-		if (consts.DEBUG) viewerWindow.webContents.openDevTools({ mode: 'undocked' });
+		//if (consts.DEBUG) viewerWindow.webContents.openDevTools({ mode: 'undocked' });
 		viewerWindow.show();
 	});
 
@@ -405,7 +405,7 @@ const initSplashWindow = () => {
 		slashes: true
 	}));
 	splashWindow.webContents.once('did-finish-load', () => initUpdater());
-	if (consts.DEBUG) splashWindow.webContents.openDevTools({ mode: 'undocked' });
+	//if (consts.DEBUG) splashWindow.webContents.openDevTools({ mode: 'undocked' });
 };
 
 const initPromptWindow = () => {
@@ -436,7 +436,7 @@ const initPromptWindow = () => {
 			protocol: 'file:',
 			slashes: true
 		}));
-		if (consts.DEBUG) promptWindow.webContents.openDevTools({ mode: 'undocked' });
+		//if (consts.DEBUG) promptWindow.webContents.openDevTools({ mode: 'undocked' });
 
 		promptWindow.webContents.on('did-finish-load', () => {
 			promptWindow.show();
@@ -522,6 +522,10 @@ const initShortcuts = () => {
 				gameWindow.setFullScreen(full);
 				config.set("fullscreen", full);
 			}
+		},
+		openDevTools: {
+			key: 'F12',
+			press: () => consts.DEBUG ? gameWindow.webContents.openDevTools({ mode: 'undocked' }):{},
 		},
 		clearConfig: {
 			key: 'Ctrl+F1',
