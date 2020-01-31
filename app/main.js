@@ -122,7 +122,7 @@ const initGameWindow = () => {
 		width: scr.width,
 		height: scr.height,
 		frame: true,
-		autoHideMenuBar: true, //hide menu bar
+		autoHideMenuBar: false, //hide menu bar
 		toolbar: false, //force title bar
 		show: false,
 		darkTheme: true,
@@ -134,7 +134,7 @@ const initGameWindow = () => {
 		}
 	});
 	gameWindow.maximize();
-	//gameWindow.removeMenu();
+	gameWindow.removeMenu();
 	gameWindow.rpc = rpc;
 
 	// Resource Swapper
