@@ -127,19 +127,39 @@ const RichPresence = window.rp = isDiscordRPCEnabled ? {
 	}
 } : null;
 
+const observer = new MutationObserver(mutations => {
+
+    for (const mutation of mutations) {
+
+        for (let node of mutation.addedNodes) {
+
+            if (node.tagName == 'HEAD') {
+                // CSS used in utilities
+                let newUtilityCSS = document.createElement("style")
+                newUtilityCSS.innerHTML = `${config.get("utilities_customFontsCSSFix", true) ? consts.css.customFontsFix : ""}
+				        ${config.get("utilities_hideAds", true) ? consts.css.hideAds : ""}`
+                node.appendChild(newUtilityCSS)
+                console.dir(node);
+            } else if (node.tagName == 'SCRIPT' && node.type == "text/javascript" && node.parentNode.nodeName == "BODY") console.log("Game Data Loaded!");
+            else if (!(node instanceof HTMLElement)) continue; //skip other text nodes
+            else if (node.id == "game-overlay") console.log("Canvas Loaded!");
+            else if (node.id == "uiBase") console.log("uiBase Loaded!");
+        }
+    }
+});
+observer.observe(document, {
+    childList: true,
+    subtree: true
+});
+
 document.addEventListener("DOMContentLoaded", () => {
 	if (isDiscordRPCEnabled) RichPresence.init();
 
 	if (location.href.isGame()) {
 		window.utilities = new Utilities();
-
-		// Custom CSS for utilities
-		let customUtilityCSS = document.createElement("style")
-		customUtilityCSS.innerHTML = `.customUtility {
-			color: #7847ff;
-		}`
-		document.head.appendChild(customUtilityCSS)
-
+		observer .disconnect();
+/* 
+Note there is no element ID serverFilters old code?
 		// Server Browser refresh button
 		window.refreshServers = () => {
 			let serverBrowser = windows.find(window => window.hasOwnProperty("serverListData"))
@@ -149,14 +169,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		new MutationObserver(() => {
 			if (document.getElementById("serverFilters")) menuWindow.getElementsByClassName("menuLink")[0].insertAdjacentHTML("afterend", ` | <a class="menuLink" onclick="refreshServers()">Refresh</a>`)
 		}).observe(windowHeader, { childList: true })
-
+*/
 	} else if (location.href.isEditor()) {
 		window.onbeforeunload = null;
 	} else if (location.href.isSocial()) {
-		// CSS used in utilities
-		let newUtilityCSS = document.createElement("style")
-		newUtilityCSS.innerHTML = `${config.get("utilities_customFontsCSSFix", true) ? consts.css.customFontsFix : ""}
-		${config.get("utilities_hideAds", true) ? consts.css.hideAds : ""}`
-		document.head.appendChild(newUtilityCSS)
 	}
 }, false);
